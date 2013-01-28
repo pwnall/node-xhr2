@@ -1,0 +1,28 @@
+# Vim.
+*.swp
+
+# OSX
+.DS_Store
+
+# Npm modules.
+node_modules
+
+# Vendored javascript modules.
+test/vendor
+
+# Build output.
+lib/xhr2.js
+test/js
+tmp/*.js
+
+# Documentation output.
+doc/*.html
+doc/assets
+doc/classes
+doc/files
+
+# Node packaging output.
+xhr2-*.tgz
+
+# Potentially sensitive keys used during testing.
+test/ssl
