@@ -12,6 +12,7 @@ if typeof window is 'undefined'
   global.sinonChai = require 'sinon-chai'
 
   xhrServer = require './xhr_server'
+  require './xhr2.png.js'
 else
   # browser
   window.NetworkError = window.Error

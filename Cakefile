@@ -63,7 +63,16 @@ build = (callback) ->
     commands.push "node_modules/.bin/coffee --output #{out_dir} " +
                   "--compile #{test_files.join(' ')}"
   async.forEachSeries commands, run, ->
+
+    # Build the binary test image.
+    buffer = fs.readFileSync 'test/fixtures/xhr2.png'
+    bytes = (buffer.readUInt8(i) for i in [0...buffer.length])
+    js = "global.xhr2PngBytes = #{JSON.stringify(bytes)};"
+    fs.writeFileSync 'test/js/helpers/xhr2.png.js', js
+
     callback() if callback
+
+
 
 webtest = (callback) ->
   xhrServer = require './test/js/helpers/xhr_server.js'
