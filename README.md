@@ -77,6 +77,7 @@ The following standard features are not implemented.
 * FormData
 * Blob
 * `file://` URIs
+* automated redirection following
 * upload progress events
 * synchronous operation
 * Same-origin policy checks and CORS
