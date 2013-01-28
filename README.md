@@ -23,9 +23,9 @@ section in your `package.json`.
 
 ```json
 {
-  "dependencies": [
+  "dependencies": {
     "xhr2": "*"
-  ]
+  }
 }
 ```
 
@@ -42,8 +42,44 @@ constructor.
 var XMLHttpRequest = require('xhr2');
 ```
 
+The other objects that are usually defined in an XHR environment are hanging
+off of `XMLHttpRequest`.
+
+```javascript
+var XMLHttpRequestUpload = XMLHttpRequest.XMLHttpRequestUpload;
+```
+
 MDN (the Mozilla Developer Network) has a
 [great intro to XMLHttpRequest](https://developer.mozilla.org/en-US/docs/DOM/XMLHttpRequest/Using_XMLHttpRequest).
+
+
+## Features
+
+The following standard features are implemented.
+
+* `http` and `https` URI protocols
+* Basic authentication according to the XMLHttpRequest specification
+* request and response header management
+* `send()` accepts the following data types: String, ArrayBuffer
+* `responseType` values: `text`, `json`, `arraybuffer`
+* `readystatechange` and download progress events
+* `overrideMimeType()`
+* `abort()`
+* `timeout`
+
+The following node.js extensions are implemented.
+
+* `send()` accepts a node.js Buffer
+* Setting `responseType` to `buffer` produces a node.js Buffer
+
+The following standard features are not implemented.
+
+* FormData
+* Blob
+* `file://` URIs
+* upload progress events
+* synchronous operation
+* Same-origin policy checks and CORS
 
 
 ## Versioning
@@ -52,6 +88,43 @@ The library aims to implement the
 [W3C XMLHttpRequest](http://www.w3.org/TR/XMLHttpRequest/) specification, so
 the library's API will always be a (hopefully growing) subset of the API in the
 specification.
+
+
+## Development
+
+The following commands will get the source tree in a `node-xhr2/` directory and
+build the library.
+
+```bash
+git clone git://github.com/pwnall/node-xhr2.git
+cd node-xhr2
+npm install
+npm pack
+```
+
+Installing CoffeeScript globally will let you type `cake` instead of
+`node_modules/.bin/cake`
+
+```bash
+npm install -g coffee-script
+```
+
+The library comes with unit tests that exercise the XMLHttpRequest API.
+
+```bash
+cake test
+```
+
+The tests themselves can be tested by running them in a browser environment,
+where a different XMLHttpRequest implementation is available. Both Google
+Chrome and Firefox deviate from the specification in small ways, so it's best
+to run the tests in both browsers and mentally compute an intersection of the
+failing tests.
+
+```bash
+cake webtest
+BROWSER=firefox cake webtest
+```
 
 
 ## Copyright and License
