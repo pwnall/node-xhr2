@@ -1,6 +1,6 @@
 {
   "name": "xhr2",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "XMLHttpRequest emulation for node.js",
   "keywords": ["xhr", "xmlhttprequest", "ajax", "browser"],
   "homepage": "https://github.com/pwnall/xhr2",
