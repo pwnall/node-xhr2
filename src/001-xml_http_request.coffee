@@ -44,8 +44,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @_request = null  # http.ClientRequest
     @_response = null  # http.ClientResponse
     @_responseParts = null  # Array<Buffer, String>
-    @_responseHeaders = null  # Object<String, String>
-    @_responseLoweredHeaders = null  # Object<lowercase String, String>
+    @_responseHeaders = null  # Object<lowercase String, String>
     @_aborting = null
     @_error = null
     @_loadedBytes = 0
@@ -140,7 +139,6 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @statusText = ''
     @_responseParts = []
     @_responseHeaders = null
-    @_responseLoweredHeaders = null
     @_loadedBytes = 0
     @_totalBytes = 0
     @_lengthComputable = false
@@ -223,7 +221,8 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   getResponseHeader: (name) ->
     return null unless @_responseHeaders
 
-    if loweredName = @_responseLoweredHeaders[name]
+    loweredName = name.toLowerCase()
+    if loweredName of @_responseHeaders
       @_responseHeaders[loweredName]
     else
       null
@@ -344,14 +343,12 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # @private
   # @return {undefined} undefined
   _finalizeHeaders: ->
-    @_headers['Accept-Charset'] = 'utf-8'
     @_headers['Connection'] = 'keep-alive'
-    @_headers['Date'] = (new Date()).toUTCString()
     @_headers['Host'] = @_url.host
     if @_anonymous
       @_headers['Referer'] = 'about:blank'
     @_headers['User-Agent'] = @_userAgent
-    @upload._finalizeHeaders @_headers
+    @upload._finalizeHeaders @_headers, @_loweredHeaders
     undefined
 
   # XMLHttpRequest#send() implementation for the file: protocol.
@@ -497,7 +494,6 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @_request = null
     @_response = null
     @_responseHeaders = null
-    @_responseLoweredHeaders = null
     @_responseParts = null
     undefined
 
@@ -511,31 +507,28 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # @see http://www.w3.org/TR/XMLHttpRequest/#the-getallresponseheaders()-method
   _parseResponseHeaders: (response) ->
     @_responseHeaders = {}
-    @_responseLoweredHeaders = {}
     for name, value of response.headers
       loweredName = name.toLowerCase()
       continue if @_privateHeaders[loweredName]
-      if @_mimeOverride and loweredName is 'content-type'
+      if @_mimeOverride isnt null and loweredName is 'content-type'
         value = @_mimeOverride
-      @_responseHeaders[name] = value
-      @_responseLoweredHeaders[loweredName] = value
+      @_responseHeaders[loweredName] = value
 
-    if @_mimeOverride and !@_responseLoweredHeaders['content-type']
-      @_responseLoweredHeaders['content-type'] = @_mimeOverride
-      @_responseHeaders['Content-Type'] = @_mimeOverride
+    if @_mimeOverride isnt null and !('content-type' of @_responseHeaders)
+      @_responseHeaders['content-type'] = @_mimeOverride
     undefined
 
   # Sets the response and responseText properties when an XHR completes.
   #
   # @private
+  # @return {undefined} undefined
   _parseResponse: ->
     buffer = Buffer.concat @_responseParts
     @_responseParts = null
 
     switch @responseType
       when 'text'
-        @responseText = buffer.toString @_parseResponseEncoding()
-        @response = @responseText
+        @_parseTextResponse buffer
       when 'json'
         @responseText = null
         try
@@ -552,9 +545,24 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
         view[i] = buffer[i] for i in [0...buffer.length]
         @response = arrayBuffer
       else
-        # Should do some clever auto-detecting.
-        @responseText = buffer.toString @_parseResponseEncoding()
-        @response = @responseText
+        # TODO(pwnall): content-base detection
+        @_parseTextResponse buffer
+    undefined
+
+  # Sets response and responseText for a 'text' response type.
+  #
+  # @private
+  # @param {Buffer} buffer the node.js Buffer containing the binary response
+  # @return {undefined} undefined
+  _parseTextResponse: (buffer) ->
+    try
+      @responseText = buffer.toString @_parseResponseEncoding()
+    catch e
+      # Unknown encoding.
+      @responseText = buffer.toString 'binary'
+
+    @response = @responseText
+    undefined
 
   # Figures out the string encoding of the XHR's response.
   #
@@ -564,7 +572,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # @return {String} a string encoding, e.g. 'utf-8'
   _parseResponseEncoding: ->
     encoding = null
-    if contentType = @_responseLoweredHeaders['content-type']
+    if contentType = @_responseHeaders['content-type']
       if match = /\;\s*charset\=(.*)$/.exec contentType
         return match[1]
     'utf-8'

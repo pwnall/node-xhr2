@@ -22,21 +22,20 @@ class XMLHttpRequestUpload extends XMLHttpRequestEventTarget
   # @param {?String, ?Buffer, ?ArrayBufferView} data the argument passed to
   #   XMLHttpRequest#send()
   # @return {undefined} undefined
+  # @see step 4 of http://www.w3.org/TR/XMLHttpRequest/#the-send()-method
   _setData: (data) ->
     if typeof data is 'undefined' or data is null
       return
 
     if typeof data is 'string'
       # DOMString
-      @_contentType = 'text/plain; charset=UTF-8'
-      @_body = new Buffer data, 'utf-8'
-    else if Buffer.isBuffer body
+      @_contentType = 'text/plain;charset=UTF-8'
+      @_body = new Buffer data, 'utf8'
+    else if Buffer.isBuffer data
       # node.js Buffer
-      @_contentType = 'application/octet-stream'
       @_body = data
     else if data.buffer and data.buffer instanceof ArrayBuffer
       # ArrayBufferView
-      @_contentType = 'application/octet-stream'
       body = new Buffer data.byteLength
       offset = data.byteOffset
       dataBuffer = data.buffer

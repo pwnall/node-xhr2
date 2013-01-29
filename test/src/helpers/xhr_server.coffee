@@ -21,6 +21,35 @@ class XhrServer
   createApp: ->
     @app = express()
 
+    # Echoes the request body. Used to test send(data).
+    @app.post '/_/echo', (request, response) ->
+      if request.headers['content-type']
+        response.header 'Content-Type', request.headers['content-type']
+      if request.headers['content-length']
+        response.header 'Content-Length', request.headers['content-length']
+
+      request.on 'data', (chunk) -> response.write chunk
+      request.on 'end', -> response.end()
+
+    # Lists the request headers. Used to test setRequestHeader().
+    @app.post '/_/headers', (request, response) ->
+      body = JSON.stringify request.headers
+      response.header 'Content-Type', 'application/json'
+      response.header 'Content-Length', body.length.toString()
+      response.end body
+
+    # Sets the response headers in the request. Used to test getResponse*().
+    @app.post '/_/get_headers', (request, response) ->
+      body = ''
+      request.on 'data', (chunk) -> body += chunk
+      request.on 'end', ->
+        headers = JSON.parse body
+        for name, value of headers
+          response.header name, value
+        response.header 'Content-Length', '0'
+        response.end ''
+
+    # Requested when the browser test suite completes.
     @app.get '/diediedie', (request, response) =>
       if 'failed' of request.query
         failed = parseInt request.query['failed']
@@ -38,6 +67,7 @@ class XhrServer
         @server.close()
         process.exit exitCode
 
+    # CORS headers on everything, in case that ever gets implemented.
     @app.use (request, response, next) ->
       response.header 'Access-Control-Allow-Origin', '*'
       response.header 'Access-Control-Allow-Methods', 'DELETE,GET,POST,PUT'
