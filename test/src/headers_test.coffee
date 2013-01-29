@@ -118,7 +118,7 @@ describe 'XMLHttpRequest', ->
     it 'returns headers when the XHR enters HEADERS_RECEIVED', (done) ->
       _done = false
       @xhr.onreadystatechange = =>
-        return if _done or @xhr.readyState < XMLHttpRequest.HEADERS_RECEIVED
+        return if _done or @xhr.readyState isnt XMLHttpRequest.HEADERS_RECEIVED
         _done = true
         expect(@xhr.getResponseHeader('AccEPt-RANgeS')).to.equal 'bytes'
         done()
@@ -155,7 +155,7 @@ describe 'XMLHttpRequest', ->
     it 'returns headers when the XHR enters HEADERS_RECEIVED', (done) ->
       _done = false
       @xhr.onreadystatechange = =>
-        return if _done or @xhr.readyState < XMLHttpRequest.HEADERS_RECEIVED
+        return if _done or @xhr.readyState isnt XMLHttpRequest.HEADERS_RECEIVED
         _done = true
         headers = @xhr.getAllResponseHeaders()
         expect(headers).to.match(/(\A|\r\n)accept-ranges: bytes(\r\n|\Z)/mi)

@@ -49,6 +49,16 @@ class XhrServer
         response.header 'Content-Length', '0'
         response.end ''
 
+    # Sets every response detail. Used for error testing.
+    @app.post '/_/response', (request, response) ->
+      body = ''
+      request.on 'data', (chunk) -> body += chunk
+      request.on 'end', ->
+        json = JSON.parse body
+        response.writeHead json.code, json.status, json.headers
+        response.write json.body if json.body
+        response.end()
+
     # Requested when the browser test suite completes.
     @app.get '/diediedie', (request, response) =>
       if 'failed' of request.query

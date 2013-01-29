@@ -260,7 +260,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   #   XMLHttpRequest#send() is called; XMLHttpRequest#setRequestHeader() can be
   #   called in this state
   OPENED: 1
-  @OPENED: 0
+  @OPENED: 1
 
   # readyState value after redirects have been followed and the HTTP headers of
   #   the final response have been received
@@ -400,6 +400,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @_response.on 'close', => @_onHttpResponseClose response
 
     @status = @_response.statusCode
+    @statusText = http.STATUS_CODES[@status]
     @_parseResponseHeaders response
 
     if lengthString = @_response['content-length']

@@ -41,6 +41,16 @@ describe 'XMLHttpRequest', ->
         done()
       @xhr.send @arrayBufferView
 
+    it 'works with ArrayBuffers', (done) ->
+      @xhr.responseType = 'arraybuffer'
+      @xhr.onload = =>
+        expect(@xhr.getResponseHeader('content-type')).to.equal null
+        responseView = new Uint8Array @xhr.response
+        responseBytes = (responseView[i] for i in [0...responseView.length])
+        expect(responseBytes).to.deep.equal xhr2PngBytes
+        done()
+      @xhr.send @arrayBuffer
+
     it 'works with node.js Buffers', (done) ->
       return done() unless @buffer
       # NOTE: using the same exact code as above, which is tested in a browser
