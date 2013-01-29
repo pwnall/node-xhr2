@@ -1,5 +1,6 @@
 # http://www.w3.org/TR/XMLHttpRequest/#xmlhttprequestupload
 class XMLHttpRequestUpload extends XMLHttpRequestEventTarget
+  # @private
   # @param {XMLHttpRequest} the XMLHttpRequest that this upload object is
   #   associated with
   constructor: (request) ->

@@ -7,6 +7,8 @@
 #
 # @see http://www.w3.org/TR/XMLHttpRequest/#xmlhttprequesteventtarget
 class XMLHttpRequestEventTarget
+  # @private
+  # This is an abstract class and should not be instantiated directly.
   constructor: ->
     @onloadstart = null
     @onprogress = null

@@ -13,7 +13,7 @@ url = require 'url'
 #
 # @see http://www.w3.org/TR/XMLHttpRequest/#introduction
 class XMLHttpRequest extends XMLHttpRequestEventTarget
-  # Creates a new XHR.
+  # Creates a new request.
   #
   # @param {Object} options one or more of the options below
   # @option options {Boolean} anon if true, the request's anonymous flag
@@ -191,9 +191,9 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
 
     switch @_url.protocol
       when 'file:'
-        @_fileSend data
+        @_sendFile data
       when 'http:', 'https:'
-        @_httpSend data
+        @_sendHttp data
       else
         throw new NetworkError "Unsupported protocol #{@_url.protocol}"
 
@@ -254,25 +254,33 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
 
   # readyState value before XMLHttpRequest#open() is called
   UNSENT: 0
+  # readyState value before XMLHttpRequest#open() is called
   @UNSENT: 0
 
   # readyState value after XMLHttpRequest#open() is called, and before
   #   XMLHttpRequest#send() is called; XMLHttpRequest#setRequestHeader() can be
   #   called in this state
   OPENED: 1
+  # readyState value after XMLHttpRequest#open() is called, and before
+  #   XMLHttpRequest#send() is called; XMLHttpRequest#setRequestHeader() can be
+  #   called in this state
   @OPENED: 1
 
   # readyState value after redirects have been followed and the HTTP headers of
   #   the final response have been received
   HEADERS_RECEIVED: 2
+  # readyState value after redirects have been followed and the HTTP headers of
+  #   the final response have been received
   @HEADERS_RECEIVED: 2
 
   # readyState value when the response entity body is being received
   LOADING: 3
+  # readyState value when the response entity body is being received
   @LOADING: 3
 
   # readyState value after the request has been completely processed
   DONE: 4
+  # readyState value after the request has been completely processed
   @DONE: 4
 
   # @property {http.Agent} the agent option passed to HTTP requests
@@ -351,7 +359,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # XMLHttpRequest#send() implementation for the file: protocol.
   #
   # @private
-  _fileSend: ->
+  _sendFile: ->
     unless @_url.method is 'GET'
       throw new NetworkError 'The file protocol only supports GET'
 
@@ -360,7 +368,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # XMLHttpRequest() implementation for the http: and https: protocols.
   #
   # @private
-  _httpSend: (data) ->
+  _sendHttp: (data) ->
     if @_sync
       throw new Error "Synchronous XHR processing not implemented"
 
@@ -376,13 +384,12 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @upload._setData data
     @_finalizeHeaders()
 
-    if @_url.protocol is 'http'
+    if @_url.protocol is 'http:'
       hxxp = http
       agent = @_httpAgent
     else
       hxxp = https
       agent = @_httpsAgent
-    hxxp = if @_url.protocol is 'http:' then http else https
     request = hxxp.request
         hostname: @_url.hostname, port: @_url.port, path: @_url.path,
         auth: @_url.auth, method: @_method, headers: @_headers, agent: agent

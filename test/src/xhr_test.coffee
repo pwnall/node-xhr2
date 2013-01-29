@@ -37,6 +37,16 @@ describe 'XMLHttpRequest', ->
         expect(@xhr.statusText).to.equal ''
 
   describe '#send', ->
+    describe 'on a local http GET', ->
+      beforeEach ->
+        @xhr.open 'GET', 'http://localhost:8912/test/fixtures/hello.txt'
+
+      it 'kicks off the request', (done) ->
+        @xhr.onload = (event) =>
+          expect(@xhr.status).to.equal 200
+          expect(@xhr.responseText).to.equal 'Hello world!\n'
+          done()
+        @xhr.send()
     describe 'on a local https GET', ->
       beforeEach ->
         @xhr.open 'GET', 'https://localhost:8911/test/fixtures/hello.txt'

@@ -1,12 +1,13 @@
 express = require 'express'
 fs = require 'fs'
+http = require 'http'
 https = require 'https'
 open = require 'open'
 
 # express.js server for testing the Web application.
 class XhrServer
   # Starts up a HTTP server.
-  constructor: (@port = 8911) ->
+  constructor: (@port, @useHttps) ->
     @createApp()
 
   # Opens the test URL in a browser.
@@ -19,6 +20,7 @@ class XhrServer
 
   # The self-signed certificate used by this server.
   certificate: ->
+    return null unless @useHttps
     keyMaterial = fs.readFileSync 'test/ssl/cert.pem', 'utf8'
     certIndex = keyMaterial.indexOf '-----BEGIN CERTIFICATE-----'
     keyMaterial.substring certIndex
@@ -94,9 +96,13 @@ class XhrServer
     @app.use express.static(fs.realpathSync(__dirname + '/../../../'),
                             { hidden: true })
 
-    options = key: fs.readFileSync 'test/ssl/cert.pem'
-    options.cert = options.key
-    @server = https.createServer options, @app
+    if @useHttps
+      options = key: fs.readFileSync 'test/ssl/cert.pem'
+      options.cert = options.key
+      @server = https.createServer options, @app
+    else
+      @server = http.createServer @app
     @server.listen @port
 
-module.exports = new XhrServer
+module.exports.https = new XhrServer 8911, true
+module.exports.http = new XhrServer 8912, false

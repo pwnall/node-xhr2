@@ -38,7 +38,7 @@ task 'vendor', ->
   vendor()
 
 task 'doc', ->
-  run 'node_modules/.bin/codo src'
+  run 'node_modules/.bin/codo --title "node-xhr API Documentation" src'
 
 build = (callback) ->
   commands = []
@@ -78,12 +78,12 @@ webtest = (callback) ->
   xhrServer = require './test/js/helpers/xhr_server.js'
   if 'BROWSER' of process.env
     if process.env['BROWSER'] is 'false'
-      url = xhrServer.testUrl()
+      url = xhrServer.https.testUrl()
       console.log "Please open the URL below in your browser:\n    #{url}"
     else
-      xhrServer.openBrowser process.env['BROWSER']
+      xhrServer.https.openBrowser process.env['BROWSER']
   else
-    xhrServer.openBrowser()
+    xhrServer.https.openBrowser()
   callback() if callback?
 
 ssl_cert = (callback) ->
