@@ -63,3 +63,16 @@ describe 'XMLHttpRequest', ->
         done()
       @xhr.send @buffer
 
+    it 'sets POST headers correctly when given null data', (done) ->
+      @xhr.open 'POST', 'https://localhost:8911/_/headers'
+      @xhr.responseType = 'text'
+      @xhr.onload = =>
+        expect(@xhr.responseText).to.match(/^\{.*\}$/)
+        headers = JSON.parse @xhr.responseText
+        expect(headers).to.have.property 'content-length'
+        expect(headers['content-length']).to.equal '0'
+        expect(headers).not.to.have.property 'content-type'
+        done()
+      @xhr.send()
+
+

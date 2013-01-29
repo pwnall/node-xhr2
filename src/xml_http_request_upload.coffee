@@ -29,7 +29,8 @@ class XMLHttpRequestUpload extends XMLHttpRequestEventTarget
 
     if typeof data is 'string'
       # DOMString
-      @_contentType = 'text/plain;charset=UTF-8'
+      if data.length isnt 0
+        @_contentType = 'text/plain;charset=UTF-8'
       @_body = new Buffer data, 'utf8'
     else if Buffer.isBuffer data
       # node.js Buffer

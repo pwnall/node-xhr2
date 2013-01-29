@@ -336,21 +336,6 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @dispatchEvent event
     undefined
 
-  # Fills in the restricted HTTP headers with default values.
-  #
-  # This is called right before the HTTP request is sent off.
-  #
-  # @private
-  # @return {undefined} undefined
-  _finalizeHeaders: ->
-    @_headers['Connection'] = 'keep-alive'
-    @_headers['Host'] = @_url.host
-    if @_anonymous
-      @_headers['Referer'] = 'about:blank'
-    @_headers['User-Agent'] = @_userAgent
-    @upload._finalizeHeaders @_headers, @_loweredHeaders
-    undefined
-
   # XMLHttpRequest#send() implementation for the file: protocol.
   #
   # @private
@@ -366,6 +351,13 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   _httpSend: (data) ->
     if @_sync
       throw new Error "Synchronous XHR processing not implemented"
+
+    if data? and (@_method is 'GET' or @_method is 'HEAD')
+      console.warn "Discarding entity body for #{@_method} requests"
+      data = null
+    else
+      # Send Content-Length: 0
+      data or= ''
 
     # NOTE: this is called before finalizeHeaders so that the uploader can
     #       figure out Content-Length and Content-Type.
@@ -383,6 +375,22 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @upload._startUpload request
 
     undefined
+
+  # Fills in the restricted HTTP headers with default values.
+  #
+  # This is called right before the HTTP request is sent off.
+  #
+  # @private
+  # @return {undefined} undefined
+  _finalizeHeaders: ->
+    @_headers['Connection'] = 'keep-alive'
+    @_headers['Host'] = @_url.host
+    if @_anonymous
+      @_headers['Referer'] = 'about:blank'
+    @_headers['User-Agent'] = @_userAgent
+    @upload._finalizeHeaders @_headers, @_loweredHeaders
+    undefined
+
 
   # Called when the headers of an HTTP response have been received.
   #
