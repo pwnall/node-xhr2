@@ -68,7 +68,7 @@ describe 'XMLHttpRequest', ->
           buffer = @xhr.response
           expect(buffer).to.be.instanceOf Buffer
           stringChars = for i in [0...buffer.length]
-            String.fromCharCode buffer.readUInt8 i
+            String.fromCharCode buffer.readUInt8(i)
           expect(stringChars.join('')).to.equal @jsonString
           done()
         @xhr.open 'GET', @jsonUrl
