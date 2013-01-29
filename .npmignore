@@ -8,6 +8,9 @@
 # Git.
 .git
 
+# Travis.
+.travis.yml
+
 # Npm modules.
 node_modules
 
