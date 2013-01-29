@@ -275,6 +275,18 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   DONE: 4
   @DONE: 4
 
+  # @property {http.Agent} the agent option passed to HTTP requests
+  #
+  # This is not a part of the XMLHttpRequest API, but it is a stable part of
+  # this node.js implementation's API.
+  _httpAgent: http.globalAgent
+
+  # @property {https.Agent} the agent option passed to HTTPS requests
+  #
+  # This is not a part of the XMLHttpRequest API, but it is a stable part of
+  # this node.js implementation's API.
+  _httpsAgent: https.globalAgent
+
   # HTTP methods that are disallowed in the XHR spec.
   #
   # @private
@@ -364,10 +376,16 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @upload._setData data
     @_finalizeHeaders()
 
+    if @_url.protocol is 'http'
+      hxxp = http
+      agent = @_httpAgent
+    else
+      hxxp = https
+      agent = @_httpsAgent
     hxxp = if @_url.protocol is 'http:' then http else https
     request = hxxp.request
         hostname: @_url.hostname, port: @_url.port, path: @_url.path,
-        auth: @_url.auth, method: @_method, headers: @_headers
+        auth: @_url.auth, method: @_method, headers: @_headers, agent: agent
     @_request = request
     if @timeout
       request.setTimeout @timeout, => @_onHttpTimeout request

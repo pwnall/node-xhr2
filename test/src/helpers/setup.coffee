@@ -13,6 +13,12 @@ if typeof window is 'undefined'
 
   xhrServer = require './xhr_server'
   require './xhr2.png.js'
+
+  https = require 'https'
+  agent = new https.Agent
+  agent.options.rejectUnauthorized = true
+  agent.options.ca = xhrServer.certificate()
+  global.XMLHttpRequest.prototype._httpsAgent = agent
 else
   # browser
   window.NetworkError = window.Error

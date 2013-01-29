@@ -17,6 +17,12 @@ class XhrServer
   testUrl: ->
     "https://localhost:#{@port}/test/html/browser_test.html"
 
+  # The self-signed certificate used by this server.
+  certificate: ->
+    keyMaterial = fs.readFileSync 'test/ssl/cert.pem', 'utf8'
+    certIndex = keyMaterial.indexOf '-----BEGIN CERTIFICATE-----'
+    keyMaterial.substring certIndex
+
   # The server code.
   createApp: ->
     @app = express()
