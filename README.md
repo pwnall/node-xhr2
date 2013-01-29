@@ -52,6 +52,10 @@ var XMLHttpRequestUpload = XMLHttpRequest.XMLHttpRequestUpload;
 MDN (the Mozilla Developer Network) has a
 [great intro to XMLHttpRequest](https://developer.mozilla.org/en-US/docs/DOM/XMLHttpRequest/Using_XMLHttpRequest).
 
+This library's [CoffeeDocs](http://coffeedoc.info/github/pwnall/node-xhr2/) can
+be used as quick reference to the XMLHttpRequest specification parts that were
+implemented.
+
 
 ## Features
 
@@ -60,7 +64,8 @@ The following standard features are implemented.
 * `http` and `https` URI protocols
 * Basic authentication according to the XMLHttpRequest specification
 * request and response header management
-* `send()` accepts the following data types: String, ArrayBuffer
+* `send()` accepts the following data types: String, ArrayBufferView,
+  ArrayBuffer (deprecated in the standard)
 * `responseType` values: `text`, `json`, `arraybuffer`
 * `readystatechange` and download progress events
 * `overrideMimeType()`
@@ -71,6 +76,8 @@ The following node.js extensions are implemented.
 
 * `send()` accepts a node.js Buffer
 * Setting `responseType` to `buffer` produces a node.js Buffer
+* `node_httpAgent` and `node_httpsAgent` properties that set the `http.Agent`
+  used in XHRs
 
 The following standard features are not implemented.
 

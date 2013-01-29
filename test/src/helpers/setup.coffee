@@ -18,7 +18,7 @@ if typeof window is 'undefined'
   agent = new https.Agent
   agent.options.rejectUnauthorized = true
   agent.options.ca = xhrServer.https.certificate()
-  global.XMLHttpRequest::_httpsAgent = agent
+  global.XMLHttpRequest::node_httpsAgent = agent
 else
   # browser
   window.NetworkError = window.Error
