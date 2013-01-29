@@ -532,7 +532,11 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # @private
   # @return {undefined} undefined
   _parseResponse: ->
-    buffer = Buffer.concat @_responseParts
+    if Buffer.concat
+      buffer = Buffer.concat @_responseParts
+    else
+      # node 0.6
+      buffer = @_concatBuffers @_responseParts
     @_responseParts = null
 
     switch @responseType
@@ -586,5 +590,24 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
         return match[1]
     'utf-8'
 
+  # Buffer.concat implementation for node 0.6.
+  #
+  # @private
+  # @param {Array<Buffer>} buffers the buffers whose contents will be merged
+  # @return {Buffer} same as Buffer.concat(buffers) in node 0.8 and above
+  _concatBuffers: (buffers) ->
+    if buffers.length is 0
+      return new Buffer 0
+    if buffers.length is 1
+      return buffers[0]
+
+    length = 0
+    length += buffer.length for buffer in buffers
+    target = new Buffer length
+    length = 0
+    for buffer in buffers
+      buffer.copy target, length
+      length += buffer.length
+    target
 
 module.exports = XMLHttpRequest
