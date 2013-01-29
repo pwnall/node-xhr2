@@ -19,25 +19,32 @@ class XMLHttpRequestEventTarget
     @onloadend = null
     @_listeners = {}
 
-  # @property {function()} DOM level 0-style handler for the 'loadstart' event
+  # @property {function(XMLHttpRequestProgressEvent)} DOM level 0-style handler
+  #   for the 'loadstart' event
   onloadstart: null
 
-  # @property {function()} DOM level 0-style handler for the 'progress' event
+  # @property {function(XMLHttpRequestProgressEvent)} DOM level 0-style handler
+  #   for the 'progress' event
   onprogress: null
 
-  # @property {function()} DOM level 0-style handler for the 'abort' event
+  # @property {function(XMLHttpRequestProgressEvent)} DOM level 0-style handler
+  #   for the 'abort' event
   onabort: null
 
-  # @property {function()} DOM level 0-style handler for the 'error' event
+  # @property {function(XMLHttpRequestProgressEvent)} DOM level 0-style handler
+  #   for the 'error' event
   onerror: null
 
-  # @property {function()} DOM level 0-style handler for the 'load' event
+  # @property {function(XMLHttpRequestProgressEvent)} DOM level 0-style handler
+  #   for the 'load' event
   onload: null
 
-  # @property {function()} DOM level 0-style handler for the 'timeout' event
+  # @property {function(XMLHttpRequestProgressEvent)} DOM level 0-style handler
+  #   for the 'timeout' event
   ontimeout: null
 
-  # @property {function()} DOM level 0-style handler for the 'loadend' event
+  # @property {function(XMLHttpRequestProgressEvent)} DOM level 0-style handler
+  #   for the 'loadend' event
   onloadend: null
 
   # Adds a new-style listener for one of the XHR events.

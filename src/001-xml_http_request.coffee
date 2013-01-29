@@ -51,8 +51,8 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @_totalBytes = 0
     @_lengthComputable = false
 
-  # @property {function()} DOM level 0-style handler for the 'readystatechange'
-  #   event
+  # @property {function(XMLHttpRequestProgressEvent)} DOM level 0-style handler
+  #   for the 'readystatechange' event
   onreadystatechange: null
 
   # @property {Number} the current state of the XHR object
