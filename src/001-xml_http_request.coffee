@@ -7,7 +7,7 @@ http = require 'http'
 https = require 'https'
 os = require 'os'
 url = require 'url'
-
+tunnel = require 'tunnel'
 
 # The ECMAScript HTTP API.
 #
@@ -18,6 +18,9 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # @param {Object} options one or more of the options below
   # @option options {Boolean} anon if true, the request's anonymous flag
   #   will be set
+  # @option options {Object} agents user-provided HTTP & HTTPS agents
+  # @option agents {Object} http the HTTP agent, defaults to {http.Agent}
+  # @option agents {Object} https the HTTPS agent, defaults to {https.Agent}
   # @see http://www.w3.org/TR/XMLHttpRequest/#constructors
   # @see http://www.w3.org/TR/XMLHttpRequest/#anonymous-flag
   constructor: (options) ->
@@ -51,6 +54,8 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @_totalBytes = 0
     @_lengthComputable = false
 
+    @setAgents @agents
+
   # @property {function(XMLHttpRequestProgressEvent)} DOM level 0-style handler
   #   for the 'readystatechange' event
   onreadystatechange: null
@@ -82,6 +87,18 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # @property {XMLHttpRequestUpload} the associated upload information
   # @see http://www.w3.org/TR/XMLHttpRequest/#the-upload-attribute
   upload: null
+
+  # set HTTP and/or HTTPS agent
+  #
+  # @param {Object} agents
+  # @option agents {Object} http the HTTP agent, defaults to {http.Agent}
+  # @option agents {Object} https the HTTPS agent, defaults to {https.Agent}
+  setAgents: (agents) ->
+    agents = agents or {}
+    @_agents = {
+      http: agents.http or http.globalAgent,
+      https: agents.https or https.globalAgent
+    }
 
   # Sets the XHR's method, URL, synchronous flag, and authentication params.
   #
@@ -283,17 +300,17 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # readyState value after the request has been completely processed
   @DONE: 4
 
-  # @property {http.Agent} the agent option passed to HTTP requests
+  # @property {httpAgent} the agent option passed to HTTP requests
   #
   # NOTE: this is not in the XMLHttpRequest API, and will not work in browsers.
-  # It is a stable node-xhr2 API that is especially useful for testing.
-  node_httpAgent: http.globalAgent
+  # It is a stable node-xhr2 API that is useful for testing & going through web-proxies
+  httpAgent: http.globalAgent
 
-  # @property {https.Agent} the agent option passed to HTTPS requests
+  # @property {httpsAgent} the agent option passed to HTTPS requests
   #
   # NOTE: this is not in the XMLHttpRequest API, and will not work in browsers.
   # It is a stable node-xhr2 API that is especially useful for testing.
-  node_httpsAgent: https.globalAgent
+  httpsAgent: https.globalAgent
 
   # HTTP methods that are disallowed in the XHR spec.
   #
@@ -386,17 +403,20 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
 
     if @_url.protocol is 'http:'
       hxxp = http
-      agent = @node_httpAgent
+      agent = @httpAgent
     else
       hxxp = https
-      agent = @node_httpsAgent
+      agent = @httpsAgent
+
     request = hxxp.request
-        hostname: @_url.hostname, port: @_url.port, path: @_url.path,
-        auth: @_url.auth, method: @_method, headers: @_headers, agent: agent
+      hostname: @_url.hostname, port: @_url.port, path: @_url.path,
+      auth: @_url.auth, method: @_method, headers: @_headers, agent: agent
+
     @_request = request
     if @timeout
       request.setTimeout @timeout, => @_onHttpTimeout request
     request.on 'response', (response) => @_onHttpResponse request, response
+    request.on 'error', (response) => @_onHttpError request
     @upload._startUpload request
 
     undefined
@@ -504,6 +524,19 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @_request.abort()
     @_setError()
     @_dispatchProgress 'timeout'
+    @_dispatchProgress 'loadend'
+
+  # Called when something wrong happens on the HTTP socket
+  #
+  # @private
+  # @param {http.ClientRequest} request the node.js ClientRequest instance that
+  #   fired this event
+  _onHttpError: (request) ->
+    return unless @_request is request
+
+    @_request.abort()
+    @_setError()
+    @_dispatchProgress 'error'
     @_dispatchProgress 'loadend'
 
   # Fires an XHR progress event.
