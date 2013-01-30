@@ -48,10 +48,10 @@ class XhrServer
 
     # Sets the response headers in the request. Used to test getResponse*().
     @app.post '/_/get_headers', (request, response) ->
-      body = ''
-      request.on 'data', (chunk) -> body += chunk
+      jsonString = ''
+      request.on 'data', (chunk) -> jsonString += chunk
       request.on 'end', ->
-        headers = JSON.parse body
+        headers = JSON.parse jsonString
         for name, value of headers
           response.header name, value
         response.header 'Content-Length', '0'
@@ -59,13 +59,33 @@ class XhrServer
 
     # Sets every response detail. Used for error testing.
     @app.post '/_/response', (request, response) ->
-      body = ''
-      request.on 'data', (chunk) -> body += chunk
+      jsonString = ''
+      request.on 'data', (chunk) -> jsonString += chunk
       request.on 'end', ->
-        json = JSON.parse body
+        json = JSON.parse jsonString
         response.writeHead json.code, json.status, json.headers
         response.write json.body if json.body
         response.end()
+
+    # Sends data in small chunks. Used for event testing.
+    @app.post '/_/drip', (request, response) ->
+      request.connection.setNoDelay()
+      jsonString = ''
+      request.on 'data', (chunk) -> jsonString += chunk
+      request.on 'end', ->
+        json = JSON.parse jsonString
+        sentDrips = 0
+        drip = new Array(json.size + 1).join '.'
+        response.header 'Content-Type', 'text/plain'
+        response.header 'Content-Length', (json.drips * json.size).toString()
+        sendDrip = =>
+          response.write drip
+          sentDrips += 1
+          if sentDrips >= json.drips
+            response.end()
+          else
+            setTimeout sendDrip, json.ms
+        sendDrip()
 
     # Requested when the browser test suite completes.
     @app.get '/diediedie', (request, response) =>

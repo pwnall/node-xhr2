@@ -401,6 +401,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     request.on 'response', (response) => @_onHttpResponse request, response
     request.on 'error', (error) => @_onHttpError error
     @upload._startUpload request
+    @_dispatchProgress 'loadstart'
 
     undefined
 
@@ -446,8 +447,6 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
       @_lengthComputable = false
 
     @_setReadyState XMLHttpRequest.HEADERS_RECEIVED
-    @_dispatchProgress 'loadstart'
-    @_dispatchProgress 'progress'
 
   # Called when some data has been received on a HTTP connection.
   #
