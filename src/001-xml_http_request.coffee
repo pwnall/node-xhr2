@@ -7,7 +7,6 @@ http = require 'http'
 https = require 'https'
 os = require 'os'
 url = require 'url'
-tunnel = require 'tunnel'
 
 # The ECMAScript HTTP API.
 #
