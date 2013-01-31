@@ -8,7 +8,6 @@ https = require 'https'
 os = require 'os'
 url = require 'url'
 
-
 # The ECMAScript HTTP API.
 #
 # @see http://www.w3.org/TR/XMLHttpRequest/#introduction
@@ -82,6 +81,14 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # @property {XMLHttpRequestUpload} the associated upload information
   # @see http://www.w3.org/TR/XMLHttpRequest/#the-upload-attribute
   upload: null
+
+  # @property {http.Agent} the HTTP agent used by the XMLHttpRequestUpload,
+  #   defaults to http.globalAgent.
+  nodejsHttpAgent: http.globalAgent
+
+  # @property {https.Agent} the HTTPS agent used by the XMLHttpRequestUpload,
+  #   defaults to https.globalAgent.
+  nodejsHttpsAgent: https.globalAgent
 
   # Sets the XHR's method, URL, synchronous flag, and authentication params.
   #
@@ -285,15 +292,17 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
 
   # @property {http.Agent} the agent option passed to HTTP requests
   #
-  # NOTE: this is not in the XMLHttpRequest API, and will not work in browsers.
-  # It is a stable node-xhr2 API that is especially useful for testing.
-  node_httpAgent: http.globalAgent
+  # NOTE: this is not in the XMLHttpRequest API, and will not work in
+  # browsers.  It is a stable node-xhr2 API that is useful for testing
+  # & going through web-proxies.
+  nodejsHttpAgent: http.globalAgent
 
   # @property {https.Agent} the agent option passed to HTTPS requests
   #
-  # NOTE: this is not in the XMLHttpRequest API, and will not work in browsers.
-  # It is a stable node-xhr2 API that is especially useful for testing.
-  node_httpsAgent: https.globalAgent
+  # NOTE: this is not in the XMLHttpRequest API, and will not work in
+  # browsers.  It is a stable node-xhr2 API that is useful for testing
+  # & going through web-proxies.
+  nodejsHttpsAgent: https.globalAgent
 
   # HTTP methods that are disallowed in the XHR spec.
   #
@@ -386,10 +395,11 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
 
     if @_url.protocol is 'http:'
       hxxp = http
-      agent = @node_httpAgent
+      agent = @nodejsHttpAgent || http.globalAgent
     else
       hxxp = https
-      agent = @node_httpsAgent
+      agent = @nodejsHttpsAgent || https.globalAgent
+
     request = hxxp.request
         hostname: @_url.hostname, port: @_url.port, path: @_url.path,
         auth: @_url.auth, method: @_method, headers: @_headers, agent: agent
@@ -397,6 +407,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     if @timeout
       request.setTimeout @timeout, => @_onHttpTimeout request
     request.on 'response', (response) => @_onHttpResponse request, response
+    request.on 'error', (error) => @_onHttpError error
     @upload._startUpload request
 
     undefined
@@ -504,6 +515,16 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @_request.abort()
     @_setError()
     @_dispatchProgress 'timeout'
+    @_dispatchProgress 'loadend'
+
+  # Called when something wrong happens on the HTTP socket
+  #
+  # @private
+  # @param {Error} error emitted exception
+  _onHttpError: (error) ->
+    @_request.abort()
+    @_setError()
+    @_dispatchProgress 'error'
     @_dispatchProgress 'loadend'
 
   # Fires an XHR progress event.
