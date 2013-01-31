@@ -18,9 +18,6 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # @param {Object} options one or more of the options below
   # @option options {Boolean} anon if true, the request's anonymous flag
   #   will be set
-  # @option options {Object} agents user-provided HTTP & HTTPS agents
-  # @option agents {Object} http the HTTP agent, defaults to http.globalAgent
-  # @option agents {Object} https the HTTPS agent, defaults to https.globalAgent
   # @see http://www.w3.org/TR/XMLHttpRequest/#constructors
   # @see http://www.w3.org/TR/XMLHttpRequest/#anonymous-flag
   constructor: (options) ->
@@ -54,8 +51,6 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @_totalBytes = 0
     @_lengthComputable = false
 
-    @setAgents @_agents
-
   # @property {function(XMLHttpRequestProgressEvent)} DOM level 0-style handler
   #   for the 'readystatechange' event
   onreadystatechange: null
@@ -88,16 +83,13 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # @see http://www.w3.org/TR/XMLHttpRequest/#the-upload-attribute
   upload: null
 
-  # set HTTP and/or HTTPS agent
-  #
-  # @param {Object} agents
-  # @option agents {Object} http the HTTP agent, defaults to http.globalAgent
-  # @option agents {Object} https the HTTPS agent, defaults to https.globalAgent
-  setAgents: (agents) ->
-    @_agents = {
-      http: (agents and agents.http) or http.globalAgent,
-      https: (agents and agents.https) or https.globalAgent
-    }
+  # @property {http.Agent} the HTTP agent used by the XMLHttpRequestUpload,
+  #   defaults to http.globalAgent.
+  nodejsHttpAgent: http.globalAgent
+
+  # @property {https.Agent} the HTTPS agent used by the XMLHttpRequestUpload,
+  #   defaults to https.globalAgent.
+  nodejsHttpsAgent: https.globalAgent
 
   # Sets the XHR's method, URL, synchronous flag, and authentication params.
   #
@@ -402,10 +394,10 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
 
     if @_url.protocol is 'http:'
       hxxp = http
-      agent = @httpAgent
+      agent = @nodejsHttpAgent || http.globalAgent
     else
       hxxp = https
-      agent = @httpsAgent
+      agent = @nodejsHttpsAgent || https.globalAgent
 
     request = hxxp.request
         hostname: @_url.hostname, port: @_url.port, path: @_url.path,
