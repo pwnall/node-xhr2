@@ -292,15 +292,17 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
 
   # @property {http.Agent} the agent option passed to HTTP requests
   #
-  # NOTE: this is not in the XMLHttpRequest API, and will not work in browsers.
-  # It is a stable node-xhr2 API that is useful for testing & going through web-proxies.
-  httpAgent: http.globalAgent
+  # NOTE: this is not in the XMLHttpRequest API, and will not work in
+  # browsers.  It is a stable node-xhr2 API that is useful for testing
+  # & going through web-proxies.
+  nodejsHttpAgent: http.globalAgent
 
   # @property {https.Agent} the agent option passed to HTTPS requests
   #
-  # NOTE: this is not in the XMLHttpRequest API, and will not work in browsers.
-  # It is a stable node-xhr2 API that is especially useful for testing.
-  httpsAgent: https.globalAgent
+  # NOTE: this is not in the XMLHttpRequest API, and will not work in
+  # browsers.  It is a stable node-xhr2 API that is useful for testing
+  # & going through web-proxies.
+  nodejsHttpsAgent: https.globalAgent
 
   # HTTP methods that are disallowed in the XHR spec.
   #
