@@ -19,8 +19,8 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # @option options {Boolean} anon if true, the request's anonymous flag
   #   will be set
   # @option options {Object} agents user-provided HTTP & HTTPS agents
-  # @option agents {Object} http the HTTP agent, defaults to {http.Agent}
-  # @option agents {Object} https the HTTPS agent, defaults to {https.Agent}
+  # @option agents {Object} http the HTTP agent, defaults to http.globalAgent
+  # @option agents {Object} https the HTTPS agent, defaults to https.globalAgent
   # @see http://www.w3.org/TR/XMLHttpRequest/#constructors
   # @see http://www.w3.org/TR/XMLHttpRequest/#anonymous-flag
   constructor: (options) ->
@@ -54,7 +54,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @_totalBytes = 0
     @_lengthComputable = false
 
-    @setAgents @agents
+    @setAgents @_agents
 
   # @property {function(XMLHttpRequestProgressEvent)} DOM level 0-style handler
   #   for the 'readystatechange' event
@@ -91,13 +91,12 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # set HTTP and/or HTTPS agent
   #
   # @param {Object} agents
-  # @option agents {Object} http the HTTP agent, defaults to {http.Agent}
-  # @option agents {Object} https the HTTPS agent, defaults to {https.Agent}
+  # @option agents {Object} http the HTTP agent, defaults to http.globalAgent
+  # @option agents {Object} https the HTTPS agent, defaults to https.globalAgent
   setAgents: (agents) ->
-    agents = agents or {}
     @_agents = {
-      http: agents.http or http.globalAgent,
-      https: agents.https or https.globalAgent
+      http: (agents and agents.http) or http.globalAgent,
+      https: (agents and agents.https) or https.globalAgent
     }
 
   # Sets the XHR's method, URL, synchronous flag, and authentication params.
@@ -300,13 +299,13 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # readyState value after the request has been completely processed
   @DONE: 4
 
-  # @property {httpAgent} the agent option passed to HTTP requests
+  # @property {http.Agent} the agent option passed to HTTP requests
   #
   # NOTE: this is not in the XMLHttpRequest API, and will not work in browsers.
-  # It is a stable node-xhr2 API that is useful for testing & going through web-proxies
+  # It is a stable node-xhr2 API that is useful for testing & going through web-proxies.
   httpAgent: http.globalAgent
 
-  # @property {httpsAgent} the agent option passed to HTTPS requests
+  # @property {https.Agent} the agent option passed to HTTPS requests
   #
   # NOTE: this is not in the XMLHttpRequest API, and will not work in browsers.
   # It is a stable node-xhr2 API that is especially useful for testing.
@@ -409,14 +408,13 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
       agent = @httpsAgent
 
     request = hxxp.request
-      hostname: @_url.hostname, port: @_url.port, path: @_url.path,
-      auth: @_url.auth, method: @_method, headers: @_headers, agent: agent
-
+        hostname: @_url.hostname, port: @_url.port, path: @_url.path,
+        auth: @_url.auth, method: @_method, headers: @_headers, agent: agent
     @_request = request
     if @timeout
       request.setTimeout @timeout, => @_onHttpTimeout request
     request.on 'response', (response) => @_onHttpResponse request, response
-    request.on 'error', (response) => @_onHttpError request
+    request.on 'error', (error) => @_onHttpError error
     @upload._startUpload request
 
     undefined
@@ -529,11 +527,8 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # Called when something wrong happens on the HTTP socket
   #
   # @private
-  # @param {http.ClientRequest} request the node.js ClientRequest instance that
-  #   fired this event
-  _onHttpError: (request) ->
-    return unless @_request is request
-
+  # @param {Error} error emitted exception
+  _onHttpError: (error) ->
     @_request.abort()
     @_setError()
     @_dispatchProgress 'error'
