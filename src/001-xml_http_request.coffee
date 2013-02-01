@@ -647,4 +647,10 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
       length += buffer.length
     target
 
+# XMLHttpRequest is the result of require('node-xhr2').
 module.exports = XMLHttpRequest
+
+# Make node-xhr2 work as a drop-in replacement for libraries that promote the
+# following usage pattern:
+#     var XMLHttpRequest = require('xhr-library-name').XMLHttpRequest
+XMHttpRequest.XMLHttpRequest = XMLHttpRequest
