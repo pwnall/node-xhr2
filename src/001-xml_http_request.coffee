@@ -251,7 +251,32 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @_mimeOverride = newMimeType.toLowerCase()
     undefined
 
+  # Network configuration not exposed in the XHR API.
   #
+  # Although the XMLHttpRequest specification calls itself "ECMAScript HTTP",
+  # it assumes that requests are always performed in the context of a browser
+  # application, where some network parameters are set by the browser user and
+  # should not be modified by Web applications. This API provides access to
+  # these network parameters.
+  #
+  # NOTE: this is not in the XMLHttpRequest API, and will not work in
+  # browsers.  It is a stable node-xhr2 API.
+  #
+  # @param {Object} options one or more of the options below
+  # @option options {?http.Agent} httpAgent the value for the nodejsHttpAgent
+  #   property (the agent used for HTTP requests)
+  # @option options {https.Agent} httpsAgent the value for the nodejsHttpsAgent
+  #   property (the agent used for HTTPS requests)
+  # @return {undefined} undefined
+  nodejsSet: (options) ->
+    if 'httpAgent' of options
+      @nodejsHttpAgent = options.httpAgent
+    if 'httpsAgent' of options
+      @nodejsHttpsAgent = options.httpsAgent
+
+    undefined
+
+  # Default settings for the network configuration not exposed in the XHR API.
   #
   # NOTE: this is not in the XMLHttpRequest API, and will not work in
   # browsers.  It is a stable node-xhr2 API.
@@ -262,11 +287,11 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # @option options {https.Agent} httpsAgent the default value for the
   #   nodejsHttpsAgent property (the agent used for HTTPS requests)
   # @return {undefined} undefined
+  # @see XMLHttpRequest.nodejsSet
   @nodejsSet: (options) ->
-    if 'httpAgent' of options
-      XMLHttpRequest::nodejsHttpAgent = options.httpAgent
-    if 'httpsAgent' of options
-      XMLHttpRequest::nodejsHttpsAgent = options.httpsAgent
+    # "this" will be set to XMLHttpRequest.prototype, so the instance nodejsSet
+    # operates on default property values.
+    XMLHttpRequest::nodejsSet options
 
     undefined
 
