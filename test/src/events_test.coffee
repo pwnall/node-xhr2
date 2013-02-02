@@ -4,7 +4,7 @@ describe 'XMLHttpRequest', ->
     @dripUrl = 'https://localhost:8911/_/drip'
     @dripJson = drips: 3, size: 1000, ms: 50, length: true
 
-  describe 'new-school events', ->
+  describe 'level 2 events', ->
     beforeEach ->
       @events = []
       @endFired = false
@@ -117,4 +117,27 @@ describe 'XMLHttpRequest', ->
             found = true
           expect(found).to.equal true
           done()
+
+    describe 'for a network error due to bad DNS', (done) ->
+      beforeEach ->
+        @xhr.open 'GET', 'https://broken.to.cause.an.xhrnetworkerror.com'
+        @xhr.send()
+
+      it 'no loadstart, load, progress is emitted', ->
+        @eventCheck = =>
+          for event in @events
+            expect(event.type).not.to.equal 'loadstart'
+            expect(event.type).not.to.equal 'load'
+            expect(event.type).not.to.equal 'progress'
+          done()
+
+      it 'events include an error event', (done) ->
+        @eventCheck = =>
+          found = 'no suitable error emitted'
+          for event in @events
+            continue unless event.type is 'error'
+            found = true
+          expect(found).to.equal true
+          done()
+
 

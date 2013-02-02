@@ -413,6 +413,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # XMLHttpRequest() implementation for the http: and https: protocols.
   #
   # @private
+  # @see http://www.w3.org/TR/XMLHttpRequest/#infrastructure-for-the-send()-method
   _sendHttp: (data) ->
     if @_sync
       throw new Error "Synchronous XHR processing not implemented"
@@ -431,10 +432,10 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
 
     if @_url.protocol is 'http:'
       hxxp = http
-      agent = @nodejsHttpAgent || XMLHttpRequest.nodejsHttpAgent || http.globalAgent
+      agent = @nodejsHttpAgent
     else
       hxxp = https
-      agent = @nodejsHttpsAgent || XMLHttpRequest.nodejsHttpsAgent || https.globalAgent
+      agent = @nodejsHttpsAgent
 
     request = hxxp.request
         hostname: @_url.hostname, port: @_url.port, path: @_url.path,
@@ -443,7 +444,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     if @timeout
       request.setTimeout @timeout, => @_onHttpTimeout request
     request.on 'response', (response) => @_onHttpResponse request, response
-    request.on 'error', (error) => @_onHttpError error
+    request.on 'error', (error) => @_onHttpRequestError request, error
     @upload._startUpload request
     @_dispatchProgress 'loadstart'
 
@@ -535,7 +536,10 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   _onHttpResponseClose: (response) ->
     return unless @_response is response
 
+    request = @_request
     @_setError()
+    request.abort()
+    @_setReadyState XMLHttpRequest.DONE
     @_dispatchProgress 'error'
     @_dispatchProgress 'loadend'
 
@@ -547,18 +551,24 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   _onHttpTimeout: (request) ->
     return unless @_request is request
 
-    @_request.abort()
     @_setError()
+    request.abort()
+    @_setReadyState XMLHttpRequest.DONE
     @_dispatchProgress 'timeout'
     @_dispatchProgress 'loadend'
 
   # Called when something wrong happens on the HTTP socket
   #
   # @private
+  # @param {http.ClientRequest} request the node.js ClientRequest instance that
+  #   fired this event
   # @param {Error} error emitted exception
-  _onHttpError: (error) ->
-    @_request.abort()
+  _onHttpRequestError: (request, error) ->
+    return unless @_request is request
+
     @_setError()
+    request.abort()
+    @_setReadyState XMLHttpRequest.DONE
     @_dispatchProgress 'error'
     @_dispatchProgress 'loadend'
 
