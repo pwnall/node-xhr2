@@ -82,14 +82,6 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # @see http://www.w3.org/TR/XMLHttpRequest/#the-upload-attribute
   upload: null
 
-  # @property {http.Agent} the HTTP agent used by the XMLHttpRequestUpload,
-  #   defaults to http.globalAgent.
-  nodejsHttpAgent: http.globalAgent
-
-  # @property {https.Agent} the HTTPS agent used by the XMLHttpRequestUpload,
-  #   defaults to https.globalAgent.
-  nodejsHttpsAgent: https.globalAgent
-
   # Sets the XHR's method, URL, synchronous flag, and authentication params.
   #
   # @param {String} method the HTTP method to be used
