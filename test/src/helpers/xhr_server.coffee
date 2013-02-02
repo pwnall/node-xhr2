@@ -77,7 +77,8 @@ class XhrServer
         sentDrips = 0
         drip = new Array(json.size + 1).join '.'
         response.header 'Content-Type', 'text/plain'
-        response.header 'Content-Length', (json.drips * json.size).toString()
+        if json.length
+          response.header 'Content-Length', (json.drips * json.size).toString()
         sendDrip = =>
           response.write drip
           sentDrips += 1

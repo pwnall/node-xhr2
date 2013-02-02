@@ -484,7 +484,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @statusText = http.STATUS_CODES[@status]
     @_parseResponseHeaders response
 
-    if lengthString = @_response['content-length']
+    if lengthString = @_responseHeaders['content-length']
       @_totalBytes = parseInt(lengthString)
       @_lengthComputable = true
     else

@@ -76,8 +76,8 @@ The following node.js extensions are implemented.
 
 * `send()` accepts a node.js Buffer
 * Setting `responseType` to `buffer` produces a node.js Buffer
-* `node_httpAgent` and `node_httpsAgent` properties that set the `http.Agent`
-  used in XHRs
+* `nodejsSet` does XHR network configuration that is not exposed in browsers,
+  for security reasons
 
 The following standard features are not implemented.
 

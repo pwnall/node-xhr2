@@ -5,6 +5,9 @@
   "keywords": ["xhr", "xmlhttprequest", "ajax", "browser"],
   "homepage": "https://github.com/pwnall/xhr2",
   "author": "Victor Costan <victor@costan.us> (http://www.costan.us)",
+  "contributors": [
+    "Francois-Xavier Kowalski <francois-xavier.kowalski@hp.com>"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -30,7 +33,6 @@
     "remove": ">= 0.1.5",
     "sinon": ">= 1.5.2",
     "sinon-chai": ">= 2.3.1",
-    "uglify-js": ">= 2.2.3"
   },
   "main": "lib/xhr2.js",
   "directories": {
