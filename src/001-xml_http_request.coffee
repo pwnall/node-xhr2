@@ -251,6 +251,25 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @_mimeOverride = newMimeType.toLowerCase()
     undefined
 
+  #
+  #
+  # NOTE: this is not in the XMLHttpRequest API, and will not work in
+  # browsers.  It is a stable node-xhr2 API.
+  #
+  # @param {Object} options one or more of the options below
+  # @option options {?http.Agent} httpAgent the default value for the
+  #   nodejsHttpAgent property (the agent used for HTTP requests)
+  # @option options {https.Agent} httpsAgent the default value for the
+  #   nodejsHttpsAgent property (the agent used for HTTPS requests)
+  # @return {undefined} undefined
+  @nodejsSet: (options) ->
+    if 'httpAgent' of options
+      XMLHttpRequest::nodejsHttpAgent = options.httpAgent
+    if 'httpsAgent' of options
+      XMLHttpRequest::nodejsHttpsAgent = options.httpsAgent
+
+    undefined
+
   # readyState value before XMLHttpRequest#open() is called
   UNSENT: 0
   # readyState value before XMLHttpRequest#open() is called
@@ -287,14 +306,14 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # NOTE: this is not in the XMLHttpRequest API, and will not work in
   # browsers.  It is a stable node-xhr2 API that is useful for testing
   # & going through web-proxies.
-  nodejsHttpAgent: XMLHttpRequest.nodejsHttpAgent
+  nodejsHttpAgent: http.globalAgent
 
   # @property {https.Agent} the agent option passed to HTTPS requests
   #
   # NOTE: this is not in the XMLHttpRequest API, and will not work in
   # browsers.  It is a stable node-xhr2 API that is useful for testing
   # & going through web-proxies.
-  nodejsHttpsAgent: XMLHttpRequest.nodejsHttpsAgent
+  nodejsHttpsAgent: https.globalAgent
 
   # HTTP methods that are disallowed in the XHR spec.
   #
@@ -653,4 +672,4 @@ module.exports = XMLHttpRequest
 # Make node-xhr2 work as a drop-in replacement for libraries that promote the
 # following usage pattern:
 #     var XMLHttpRequest = require('xhr-library-name').XMLHttpRequest
-XMHttpRequest.XMLHttpRequest = XMLHttpRequest
+XMLHttpRequest.XMLHttpRequest = XMLHttpRequest
