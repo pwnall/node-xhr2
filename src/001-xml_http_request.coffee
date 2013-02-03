@@ -446,7 +446,8 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     request.on 'response', (response) => @_onHttpResponse request, response
     request.on 'error', (error) => @_onHttpRequestError request, error
     @upload._startUpload request
-    @_dispatchProgress 'loadstart'
+    if @_request is request  # An http error might have already fired.
+      @_dispatchProgress 'loadstart'
 
     undefined
 

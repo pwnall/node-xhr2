@@ -123,10 +123,9 @@ describe 'XMLHttpRequest', ->
         @xhr.open 'GET', 'https://broken.to.cause.an.xhrnetworkerror.com'
         @xhr.send()
 
-      it 'no loadstart, load, progress is emitted', ->
+      it 'no progress or load is emitted', (done) ->
         @eventCheck = =>
           for event in @events
-            expect(event.type).not.to.equal 'loadstart'
             expect(event.type).not.to.equal 'load'
             expect(event.type).not.to.equal 'progress'
           done()
@@ -140,4 +139,66 @@ describe 'XMLHttpRequest', ->
           expect(found).to.equal true
           done()
 
+  describe 'readystatechange', ->
+    beforeEach ->
+      @events = []
+      @states = []
+      @doneFired = false
+      @eventCheck = -> null  # replaced by tests
+      @xhr.addEventListener 'readystatechange', (event) =>
+        expect(event.type).to.equal 'readystatechange'
+        expect(@doneFired).to.equal false
+        @events.push event
+        @states.push event.target.readyState
+        if event.target.readyState is XMLHttpRequest.DONE
+          @doneFired = 'DONE already fired'
+          @eventCheck()
 
+    describe 'for a successful fetch with Content-Length set', ->
+      beforeEach ->
+        @xhr.open 'POST', @dripUrl
+        @xhr.send JSON.stringify(@dripJson)
+
+      it 'events have the correct target', (done) ->
+        @eventCheck = =>
+          for event in @events
+            expect(event.target).to.equal @xhr
+          done()
+
+      it 'events have the correct bubbling setup', (done) ->
+        @eventCheck = =>
+          for event in @events
+            expect(event.bubbles).to.equal false
+            expect(event.cancelable).to.equal false
+          done()
+
+      it 'events states are in the correct order', (done) ->
+        @eventCheck = =>
+          expect(@states).to.deep.equal [XMLHttpRequest.OPENED,
+              XMLHttpRequest.HEADERS_RECEIVED,
+              XMLHttpRequest.LOADING, XMLHttpRequest.DONE]
+          done()
+
+    describe 'for a successful fetch without Content-Length set', ->
+      beforeEach ->
+        @xhr.open 'POST', @dripUrl
+        @dripJson.length = false
+        @xhr.send JSON.stringify(@dripJson)
+
+      it 'events states are in the correct order', (done) ->
+        @eventCheck = =>
+          expect(@states).to.deep.equal [XMLHttpRequest.OPENED,
+              XMLHttpRequest.HEADERS_RECEIVED, XMLHttpRequest.LOADING,
+              XMLHttpRequest.DONE]
+          done()
+
+    describe 'for a network error due to bad DNS', (done) ->
+      beforeEach ->
+        @xhr.open 'GET', 'https://broken.to.cause.an.xhrnetworkerror.com'
+        @xhr.send()
+
+      it 'events states are in the correct order', (done) ->
+        @eventCheck = =>
+          expect(@states).to.deep.equal [XMLHttpRequest.OPENED,
+              XMLHttpRequest.DONE]
+          done()
