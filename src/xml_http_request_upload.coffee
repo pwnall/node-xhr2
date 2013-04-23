@@ -69,14 +69,14 @@ class XMLHttpRequestUpload extends XMLHttpRequestEventTarget
   #   parameter (e.g., 'Content-Type')
   # @return {undefined} undefined
   _finalizeHeaders: (headers, loweredHeaders) ->
+    if @_contentType
+      unless 'content-type' of loweredHeaders
+        headers['Content-Type'] = @_contentType
+
     if @_body
       # Restricted headers can't be set by the user, no need to check
       # loweredHeaders.
       headers['Content-Length'] = @_body.length.toString()
-
-    if @_contentType
-      unless loweredHeaders['content-type']
-        headers['Content-Type'] = @_contentType
 
     undefined
 

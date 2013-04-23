@@ -71,6 +71,7 @@ The following standard features are implemented.
 * `overrideMimeType()`
 * `abort()`
 * `timeout`
+* automated redirection following
 
 The following node.js extensions are implemented.
 
@@ -84,10 +85,11 @@ The following standard features are not implemented.
 * FormData
 * Blob
 * `file://` URIs
-* automated redirection following
+* `data:` URIs
 * upload progress events
 * synchronous operation
 * Same-origin policy checks and CORS
+* cookie processing
 
 
 ## Versioning

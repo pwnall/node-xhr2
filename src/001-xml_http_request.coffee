@@ -85,7 +85,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # Sets the XHR's method, URL, synchronous flag, and authentication params.
   #
   # @param {String} method the HTTP method to be used
-  # @param {String} urlString the URL that the request will be made to
+  # @param {String} url the URL that the request will be made to
   # @param {?Boolean} async if false, the XHR should be processed
   #   synchronously; true by default
   # @param {?String} user the user credential to be used in HTTP basic
@@ -98,23 +98,12 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # @throw {Error} the URL contains an unsupported protocol; the supported
   #   protocols are file, http and https
   # @see http://www.w3.org/TR/XMLHttpRequest/#the-open()-method
-  open: (method, urlString, async, user, password) ->
+  open: (method, url, async, user, password) ->
     method = method.toUpperCase()
     if method of @_restrictedMethods
       throw new SecurityError "HTTP method #{method} is not allowed in XHR"
 
-    xhrUrl = url.parse urlString, false, true
-    xhrUrl.hash = null
-    if xhrUrl.auth and (user? or password?)
-      index = xhrUrl.auth.indexOf ':'
-      if index is -1
-        user = xhrUrl.auth unless user
-      else
-        user = xhrUrl.substring(0, index) unless user
-        password = xhrUrl.substring(index + 1) unless password
-    if user or password
-      xhrUrl.auth = "#{user}:#{password}"
-
+    xhrUrl = @_parseUrl url
     async = true if async is undefined
 
     switch @readyState
@@ -410,9 +399,14 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
 
     throw new Error "Protocol file: not implemented"
 
-  # XMLHttpRequest() implementation for the http: and https: protocols.
+  # XMLHttpRequest#send() implementation for the http: and https: protocols.
   #
   # @private
+  # This method sets the instance variables and calls _sendHxxpRequest(), which
+  # is responsible for building a node.js request and firing it off. The code
+  # in _sendHxxpRequest() is separated off so it can be reused when handling
+  # redirects.
+  #
   # @see http://www.w3.org/TR/XMLHttpRequest/#infrastructure-for-the-send()-method
   _sendHttp: (data) ->
     if @_sync
@@ -430,6 +424,17 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @upload._setData data
     @_finalizeHeaders()
 
+    @_sendHxxpRequest()
+    undefined
+
+  # Sets up and fires off a HTTP/HTTPS request using the node.js API.
+  #
+  # @private
+  # This method contains the bulk of the XMLHttpRequest#send() implementation,
+  # and is also used to issue new HTTP requests when handling HTTP redirects.
+  #
+  # @see http://www.w3.org/TR/XMLHttpRequest/#infrastructure-for-the-send()-method
+  _sendHxxpRequest: ->
     if @_url.protocol is 'http:'
       hxxp = http
       agent = @nodejsHttpAgent
@@ -476,6 +481,26 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   #   passed to
   _onHttpResponse: (request, response) ->
     return unless @_request is request
+
+    # Transparent redirection handling.
+    switch response.statusCode
+      when 301, 302, 303, 307, 308
+        @_url = @_parseUrl response.headers['location']
+        @_method = 'GET'
+        if 'content-type' of @_loweredHeaders
+          delete @_headers[@_loweredHeaders['content-type']]
+          delete @_loweredHeaders['content-type']
+        # XMLHttpRequestUpload#_finalizeHeaders() sets Content-Type directly.
+        if 'Content-Type' of @_headers
+          delete @_headers['Content-Type']
+        # Restricted headers can't be set by the user, no need to check
+        # loweredHeaders.
+        delete @_headers['Content-Length']
+
+        @upload._reset()
+        @_finalizeHeaders()
+        @_sendHxxpRequest()
+        return
 
     @_response = response
     @_response.on 'data', (data) => @_onHttpResponseData response, data
@@ -597,6 +622,30 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @_responseHeaders = null
     @_responseParts = null
     undefined
+
+  # Parses a request URL string.
+  #
+  # @private
+  # This method is a thin wrapper around url.parse() that normalizes HTTP
+  # user/password credentials. It is used to parse the URL string passed to
+  # XMLHttpRequest#open() and the URLs in the Location headers of HTTP redirect
+  # responses.
+  #
+  # @param {String} urlString the URL to be parsed
+  # @return {Object} parsed URL
+  _parseUrl: (urlString) ->
+    xhrUrl = url.parse urlString, false, true
+    xhrUrl.hash = null
+    if xhrUrl.auth and (user? or password?)
+      index = xhrUrl.auth.indexOf ':'
+      if index is -1
+        user = xhrUrl.auth unless user
+      else
+        user = xhrUrl.substring(0, index) unless user
+        password = xhrUrl.substring(index + 1) unless password
+    if user or password
+      xhrUrl.auth = "#{user}:#{password}"
+    xhrUrl
 
   # Reads the headers from a node.js ClientResponse instance.
   #

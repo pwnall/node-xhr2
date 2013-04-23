@@ -29,6 +29,29 @@ class XhrServer
   createApp: ->
     @app = express()
 
+    ## Middleware.
+
+    # CORS headers on everything, in case that ever gets implemented.
+    @app.use (request, response, next) ->
+      response.header 'Access-Control-Allow-Origin', '*'
+      response.header 'Access-Control-Allow-Methods', 'DELETE,GET,POST,PUT'
+      response.header 'Access-Control-Allow-Headers',
+                      'Content-Type, Authorization'
+      next()
+
+    @app.use @app.router
+
+    @app.use express.static(fs.realpathSync(__dirname + '/../../../'),
+                            { hidden: true })
+
+    ## Routes
+
+    @app.all '/_/method', (request, response) ->
+      body = request.method
+      response.header 'Content-Type', 'text/plain'
+      response.header 'Content-Length', body.length.toString()
+      response.end body
+
     # Echoes the request body. Used to test send(data).
     @app.post '/_/echo', (request, response) ->
       if request.headers['content-type']
@@ -40,7 +63,7 @@ class XhrServer
       request.on 'end', -> response.end()
 
     # Lists the request headers. Used to test setRequestHeader().
-    @app.post '/_/headers', (request, response) ->
+    @app.all '/_/headers', (request, response) ->
       body = JSON.stringify request.headers
       response.header 'Content-Type', 'application/json'
       response.header 'Content-Length', body.length.toString()
@@ -88,6 +111,17 @@ class XhrServer
             setTimeout sendDrip, json.ms
         sendDrip()
 
+    # Returns a HTTP redirect. Used to test the redirection handling code.
+    @app.all '/_/redirect/:status/:next_page', (request, response) =>
+      response.statusCode = parseInt(request.params.status)
+      response.header 'Location',
+          "https://#{request.get('host')}/_/#{request.params.next_page}"
+      body = "<p>This is supposed to have a redirect link</p>"
+      response.header 'Content-Type', 'text/html'
+      response.header 'Content-Length', body.length.toString()
+      response.header 'X-Redirect-Header', 'should not show up'
+      response.end body
+
     # Requested when the browser test suite completes.
     @app.get '/diediedie', (request, response) =>
       if 'failed' of request.query
@@ -105,17 +139,6 @@ class XhrServer
       unless 'NO_EXIT' of process.env
         @server.close()
         process.exit exitCode
-
-    # CORS headers on everything, in case that ever gets implemented.
-    @app.use (request, response, next) ->
-      response.header 'Access-Control-Allow-Origin', '*'
-      response.header 'Access-Control-Allow-Methods', 'DELETE,GET,POST,PUT'
-      response.header 'Access-Control-Allow-Headers',
-                      'Content-Type, Authorization'
-      next()
-
-    @app.use express.static(fs.realpathSync(__dirname + '/../../../'),
-                            { hidden: true })
 
     if @useHttps
       options = key: fs.readFileSync 'test/ssl/cert.pem'
