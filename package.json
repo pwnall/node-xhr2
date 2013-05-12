@@ -1,6 +1,6 @@
 {
   "name": "xhr2",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "XMLHttpRequest emulation for node.js",
   "keywords": ["xhr", "xmlhttprequest", "ajax", "browser"],
   "homepage": "https://github.com/pwnall/xhr2",
@@ -22,11 +22,11 @@
   "dependencies": {
   },
   "devDependencies": {
-    "async": ">= 0.1.22",
+    "async": ">= 0.2.7",
     "chai": ">= 1.5.0",
     "codo": ">= 1.6.0",
     "coffee-script": ">= 1.6.2",
-    "express": ">= 3.2.0",
+    "express": ">= 3.1.2",
     "glob": ">= 3.1.17",
     "mocha": ">= 1.9.0",
     "open": ">= 0.0.3",
