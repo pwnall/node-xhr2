@@ -11,7 +11,8 @@ This library is tested against the following platforms.
 
 * [node.js](http://nodejs.org/) 0.6
 * [node.js](http://nodejs.org/) 0.8
-* [node.js](http://nodejs.org/) 0.9
+* [node.js](http://nodejs.org/) 0.10
+* [node.js](http://nodejs.org/) 0.11
 
 Keep in mind that the versions above are not hard requirements.
 

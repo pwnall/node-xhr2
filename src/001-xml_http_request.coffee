@@ -254,8 +254,8 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # @param {Object} options one or more of the options below
   # @option options {?http.Agent} httpAgent the value for the nodejsHttpAgent
   #   property (the agent used for HTTP requests)
-  # @option options {https.Agent} httpsAgent the value for the nodejsHttpsAgent
-  #   property (the agent used for HTTPS requests)
+  # @option options {?https.Agent} httpsAgent the value for the
+  #   nodejsHttpsAgent property (the agent used for HTTPS requests)
   # @return {undefined} undefined
   nodejsSet: (options) ->
     if 'httpAgent' of options

@@ -41,6 +41,17 @@ describe 'XMLHttpRequest', ->
         done()
       @xhr.send @arrayBufferView
 
+    it 'works with ArrayBufferViews with set index and length', (done) ->
+      @xhr.responseType = 'arraybuffer'
+      @xhr.onload = =>
+        expect(@xhr.getResponseHeader('content-type')).to.equal null
+        responseView = new Uint8Array @xhr.response
+        responseBytes = (responseView[i] for i in [0...responseView.length])
+        expect(responseBytes).to.deep.equal xhr2PngBytes[10...52]
+        done()
+      arrayBufferView10 = new Uint8Array @arrayBuffer, 10, 42
+      @xhr.send arrayBufferView10
+
     it 'works with ArrayBuffers', (done) ->
       @xhr.responseType = 'arraybuffer'
       @xhr.onload = =>

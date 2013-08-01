@@ -46,8 +46,8 @@ class XMLHttpRequestUpload extends XMLHttpRequestEventTarget
       # ArrayBufferView
       body = new Buffer data.byteLength
       offset = data.byteOffset
-      dataBuffer = data.buffer
-      body[i] = dataBuffer[i] - offset for i in [0...data.byteLength]
+      view = new Uint8Array data.buffer
+      body[i] = view[i + offset] for i in [0...data.byteLength]
       @_body = body
     else
       # NOTE: diverging from the XHR specification of coercing everything else
