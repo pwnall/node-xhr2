@@ -3,10 +3,15 @@
 # XMLHttpRequestEventTarget definition and so that the other files can assume
 # that XMLHttpRequest was already defined.
 
+child_process = require 'child_process'
 http = require 'http'
 https = require 'https'
 os = require 'os'
+path = require 'path'
 url = require 'url'
+
+temp = require 'temp'
+
 
 # The ECMAScript HTTP API.
 #
@@ -409,9 +414,6 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   #
   # @see http://www.w3.org/TR/XMLHttpRequest/#infrastructure-for-the-send()-method
   _sendHttp: (data) ->
-    if @_sync
-      throw new Error "Synchronous XHR processing not implemented"
-
     if data? and (@_method is 'GET' or @_method is 'HEAD')
       console.warn "Discarding entity body for #{@_method} requests"
       data = null
@@ -435,6 +437,10 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   #
   # @see http://www.w3.org/TR/XMLHttpRequest/#infrastructure-for-the-send()-method
   _sendHxxpRequest: ->
+    if @_sync
+      @_sendHxxpRequestSync()
+      return
+
     if @_url.protocol is 'http:'
       hxxp = http
       agent = @nodejsHttpAgent
@@ -455,6 +461,22 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
       @_dispatchProgress 'loadstart'
 
     undefined
+
+  # Performs a HTTP/HTTPS request synchronously, (ab)using the node.js APIs.
+  _sendHxxpRequestSync: ->
+    dirName = temp.mkdirSync()
+    metaFile = path.join dirName, 'meta'
+    bodyFile = path.join dirName, 'body'
+    responseMetaFile = path.join dirName, 'rmeta'
+    responseBodyFile = path.join dirName, 'rbody'
+    
+    childProcess = child_process.fork __filename, cwd: dirName
+    childProcess.disconnect()
+
+    until fs.existsSync(responseMetaFile)
+      ###
+      
+
 
   # Fills in the restricted HTTP headers with default values.
   #
@@ -750,6 +772,10 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
       buffer.copy target, length
       length += buffer.length
     target
+
+  _reinstateSync:
+
+  _syncSave:
 
 # XMLHttpRequest is the result of require('node-xhr2').
 module.exports = XMLHttpRequest
