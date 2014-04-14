@@ -3,7 +3,7 @@
   "version": "0.0.7",
   "description": "XMLHttpRequest emulation for node.js",
   "keywords": ["xhr", "xmlhttprequest", "ajax", "browser"],
-  "homepage": "https://github.com/pwnall/xhr2",
+  "homepage": "https://github.com/pwnall/node-xhr2",
   "author": "Victor Costan <victor@costan.us> (http://www.costan.us)",
   "contributors": [
     "Francois-Xavier Kowalski <francois-xavier.kowalski@hp.com>"
