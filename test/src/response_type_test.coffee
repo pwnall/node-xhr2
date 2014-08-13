@@ -2,9 +2,9 @@ describe 'XMLHttpRequest', ->
   describe '#responseType', ->
     beforeEach ->
       @xhr = new XMLHttpRequest
-      @jsonUrl = 'https://localhost:8911/test/fixtures/hello.json'
+      @jsonUrl = 'http://localhost:8912/test/fixtures/hello.json'
       @jsonString = '{"hello": "world", "answer": 42}\n'
-      @imageUrl = 'https://localhost:8911/test/fixtures/xhr2.png'
+      @imageUrl = 'http://localhost:8912/test/fixtures/xhr2.png'
 
     describe 'text', ->
       it 'reads a JSON file into a String', (done) ->
@@ -32,7 +32,7 @@ describe 'XMLHttpRequest', ->
         @xhr.addEventListener 'loadend', =>
           expect(@xhr.response).to.equal null
           done()
-        @xhr.open 'GET', 'https://localhost:8911/test/fixtures/hello.txt'
+        @xhr.open 'GET', 'http://localhost:8912/test/fixtures/hello.txt'
         @xhr.responseType = 'json'
         @xhr.send()
 

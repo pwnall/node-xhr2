@@ -5,7 +5,7 @@
 
 # The DOM EventTarget subclass used by XMLHttpRequest.
 #
-# @see http://www.w3.org/TR/XMLHttpRequest/#xmlhttprequesteventtarget
+# @see http://xhr.spec.whatwg.org/#interface-xmlhttprequest
 class XMLHttpRequestEventTarget
   # @private
   # This is an abstract class and should not be instantiated directly.
@@ -19,31 +19,31 @@ class XMLHttpRequestEventTarget
     @onloadend = null
     @_listeners = {}
 
-  # @property {function(XMLHttpRequestProgressEvent)} DOM level 0-style handler
+  # @property {function(ProgressEvent)} DOM level 0-style handler
   #   for the 'loadstart' event
   onloadstart: null
 
-  # @property {function(XMLHttpRequestProgressEvent)} DOM level 0-style handler
+  # @property {function(ProgressEvent)} DOM level 0-style handler
   #   for the 'progress' event
   onprogress: null
 
-  # @property {function(XMLHttpRequestProgressEvent)} DOM level 0-style handler
+  # @property {function(ProgressEvent)} DOM level 0-style handler
   #   for the 'abort' event
   onabort: null
 
-  # @property {function(XMLHttpRequestProgressEvent)} DOM level 0-style handler
+  # @property {function(ProgressEvent)} DOM level 0-style handler
   #   for the 'error' event
   onerror: null
 
-  # @property {function(XMLHttpRequestProgressEvent)} DOM level 0-style handler
+  # @property {function(ProgressEvent)} DOM level 0-style handler
   #   for the 'load' event
   onload: null
 
-  # @property {function(XMLHttpRequestProgressEvent)} DOM level 0-style handler
+  # @property {function(ProgressEvent)} DOM level 0-style handler
   #   for the 'timeout' event
   ontimeout: null
 
-  # @property {function(XMLHttpRequestProgressEvent)} DOM level 0-style handler
+  # @property {function(ProgressEvent)} DOM level 0-style handler
   #   for the 'loadend' event
   onloadend: null
 
@@ -52,8 +52,8 @@ class XMLHttpRequestEventTarget
   # @see http://www.w3.org/TR/XMLHttpRequest/#events
   #
   # @param {String} eventType an XHR event type, such as 'readystatechange'
-  # @param {function(XMLHttpRequestProgressEvent)} listener function that will
-  #   be called when the event fires
+  # @param {function(ProgressEvent)} listener function that will be called when
+  #   the event fires
   # @return {undefined} undefined
   addEventListener: (eventType, listener) ->
     eventType = eventType.toLowerCase()
@@ -64,8 +64,8 @@ class XMLHttpRequestEventTarget
   # Removes an event listener added by calling addEventListener.
   #
   # @param {String} eventType an XHR event type, such as 'readystatechange'
-  # @param {function(XMLHttpRequestProgressEvent)} listener the value passed in
-  #   a previous call to addEventListener.
+  # @param {function(ProgressEvent)} listener the value passed in a previous
+  #   call to addEventListener.
   # @return {undefined} undefined
   removeEventListener: (eventType, listener) ->
     eventType = eventType.toLowerCase()
@@ -76,13 +76,14 @@ class XMLHttpRequestEventTarget
 
   # Calls all the listeners for an event.
   #
-  # @param {XMLHttpRequestProgressEvent} event the event to be dispatched
+  # @param {ProgressEvent} event the event to be dispatched
   # @return {undefined} undefined
   dispatchEvent: (event) ->
+    event.currentTarget = event.target = @
     eventType = event.type
     if listeners = @_listeners[eventType]
       for listener in listeners
-        listener event
+        listener.call @, event
     if listener = @["on#{eventType}"]
-      listener event
+      listener.call @, event
     undefined

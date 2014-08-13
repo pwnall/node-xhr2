@@ -1,9 +1,9 @@
 describe 'XMLHttpRequest', ->
   beforeEach ->
     @xhr = new XMLHttpRequest
-    @okUrl = 'https://localhost:8911/test/fixtures/hello.txt'
+    @okUrl = 'http://localhost:8912/test/fixtures/hello.txt'
 
-    @errorUrl = 'https://localhost:8911/_/response'
+    @errorUrl = 'http://localhost:8912/_/response'
     @errorJson = JSON.stringify
         code: 401, status: 'Unauthorized',
         body: JSON.stringify(error: 'Credential error'),
@@ -28,7 +28,7 @@ describe 'XMLHttpRequest', ->
             done()
       @xhr.send()
 
-    it 'is returns the server-reported status', (done) ->
+    it 'returns the server-reported status', (done) ->
       @xhr.open 'POST', @errorUrl
       _done = false
       @xhr.addEventListener 'readystatechange', =>

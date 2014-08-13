@@ -2,7 +2,7 @@ describe 'XMLHttpRequest', ->
   describe '#send', ->
     beforeEach ->
       @xhr = new XMLHttpRequest
-      @xhr.open 'POST', 'https://localhost:8911/_/echo'
+      @xhr.open 'POST', 'http://localhost:8912/_/echo'
 
       @arrayBuffer = new ArrayBuffer xhr2PngBytes.length
       @arrayBufferView = new Uint8Array @arrayBuffer
@@ -75,7 +75,7 @@ describe 'XMLHttpRequest', ->
       @xhr.send @buffer
 
     it 'sets POST headers correctly when given null data', (done) ->
-      @xhr.open 'POST', 'https://localhost:8911/_/headers'
+      @xhr.open 'POST', 'http://localhost:8912/_/headers'
       @xhr.responseType = 'text'
       @xhr.onload = =>
         expect(@xhr.responseText).to.match(/^\{.*\}$/)

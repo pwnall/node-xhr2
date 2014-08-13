@@ -82,6 +82,3 @@ describe 'XMLHttpRequest', ->
       it 'does not interfere with default nodejsHttpsAgent settings', ->
         return unless XMLHttpRequest.nodejsSet  # Skip in browsers.
         expect(@xhr.nodejsHttpsAgent).not.to.equal @customAgent
-
-      afterEach ->
-        XMLHttpRequest.nodejsSet httpsAgent: @default
