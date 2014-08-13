@@ -23,16 +23,16 @@
   },
   "devDependencies": {
     "async": ">= 0.2.8",
-    "chai": ">= 1.6.0",
-    "codo": ">= 1.6.1",
-    "coffee-script": ">= 1.6.2",
-    "express": ">= 3.2.4",
-    "glob": ">= 3.2.1",
-    "mocha": ">= 1.9.0",
-    "open": ">= 0.0.3",
+    "chai": ">= 1.9.1",
+    "codo": ">= 2.0.9",
+    "coffee-script": ">= 1.7.1",
+    "express": ">= 4.8.3",
+    "glob": ">= 4.0.5",
+    "mocha": ">= 1.21.4",
+    "open": ">= 0.0.5",
     "remove": ">= 0.1.5",
-    "sinon": ">= 1.7.2",
-    "sinon-chai": ">= 2.4.0"
+    "sinon": ">= 1.10.3",
+    "sinon-chai": ">= 2.5.0"
   },
   "main": "lib/xhr2.js",
   "directories": {

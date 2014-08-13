@@ -1,14 +1,14 @@
-describe 'XMLHttpRequest', ->
+describe.only 'XMLHttpRequest', ->
   beforeEach ->
     @xhr = new XMLHttpRequest
-    @dripUrl = 'https://localhost:8911/_/drip'
+    @dripUrl = 'http://localhost:8912/_/drip'
     @dripJson = drips: 3, size: 1000, ms: 50, length: true
 
   describe 'level 2 events', ->
     beforeEach ->
       @events = []
       @endFired = false
-      @eventCheck = -> null  # replaced by tests
+      @events.check = -> null  # replaced by tests
       @xhr.addEventListener 'loadstart', (event) =>
         expect(event.type).to.equal 'loadstart'
         expect(@endFired).to.equal false
@@ -26,7 +26,7 @@ describe 'XMLHttpRequest', ->
         expect(@endFired).to.equal false
         @endFired = 'loadend already fired'
         @events.push event
-        @eventCheck()
+        @events.check()
       @xhr.addEventListener 'error', (event) =>
         expect(event.type).to.equal 'error'
         expect(@endFired).to.equal false
@@ -42,20 +42,20 @@ describe 'XMLHttpRequest', ->
         @xhr.send JSON.stringify(@dripJson)
 
       it 'events have the correct target', (done) ->
-        @eventCheck = =>
+        @events.check = =>
           for event in @events
             expect(event.target).to.equal @xhr
           done()
 
       it 'events have the correct bubbling setup', (done) ->
-        @eventCheck = =>
+        @events.check = =>
           for event in @events
             expect(event.bubbles).to.equal false
             expect(event.cancelable).to.equal false
           done()
 
       it 'events have the correct progress info', (done) ->
-        @eventCheck = =>
+        @events.check = =>
           for event in @events
             switch event.type
               when 'loadstart'
@@ -77,7 +77,7 @@ describe 'XMLHttpRequest', ->
           done()
 
       it 'events include at least one intermediate progress event', (done) ->
-        @eventCheck = =>
+        @events.check = =>
           found = 'no suitable progress event emitted'
           for event in @events
             continue unless event.type is 'progress'
@@ -94,7 +94,7 @@ describe 'XMLHttpRequest', ->
         @xhr.send JSON.stringify(@dripJson)
 
       it 'events have the correct progress info', (done) ->
-        @eventCheck = =>
+        @events.check = =>
           for event in @events
             expect(event.lengthComputable).to.equal false
             expect(event.total).to.equal 0
@@ -108,7 +108,7 @@ describe 'XMLHttpRequest', ->
           done()
 
       it 'events include at least one intermediate progress event', (done) ->
-        @eventCheck = =>
+        @events.check = =>
           found = 'no suitable progress event emitted'
           for event in @events
             continue unless event.type is 'progress'
@@ -124,14 +124,14 @@ describe 'XMLHttpRequest', ->
         @xhr.send()
 
       it 'no progress or load is emitted', (done) ->
-        @eventCheck = =>
+        @events.check = =>
           for event in @events
             expect(event.type).not.to.equal 'load'
             expect(event.type).not.to.equal 'progress'
           done()
 
       it 'events include an error event', (done) ->
-        @eventCheck = =>
+        @events.check = =>
           found = 'no suitable error emitted'
           for event in @events
             continue unless event.type is 'error'
@@ -144,7 +144,7 @@ describe 'XMLHttpRequest', ->
       @events = []
       @states = []
       @doneFired = false
-      @eventCheck = -> null  # replaced by tests
+      @events.check = -> null  # replaced by tests
       @xhr.addEventListener 'readystatechange', (event) =>
         expect(event.type).to.equal 'readystatechange'
         expect(@doneFired).to.equal false
@@ -152,7 +152,7 @@ describe 'XMLHttpRequest', ->
         @states.push event.target.readyState
         if event.target.readyState is XMLHttpRequest.DONE
           @doneFired = 'DONE already fired'
-          @eventCheck()
+          @events.check()
 
     describe 'for a successful fetch with Content-Length set', ->
       beforeEach ->
@@ -160,20 +160,20 @@ describe 'XMLHttpRequest', ->
         @xhr.send JSON.stringify(@dripJson)
 
       it 'events have the correct target', (done) ->
-        @eventCheck = =>
+        @events.check = =>
           for event in @events
             expect(event.target).to.equal @xhr
           done()
 
       it 'events have the correct bubbling setup', (done) ->
-        @eventCheck = =>
+        @events.check = =>
           for event in @events
             expect(event.bubbles).to.equal false
             expect(event.cancelable).to.equal false
           done()
 
       it 'events states are in the correct order', (done) ->
-        @eventCheck = =>
+        @events.check = =>
           expect(@states).to.deep.equal [XMLHttpRequest.OPENED,
               XMLHttpRequest.HEADERS_RECEIVED,
               XMLHttpRequest.LOADING, XMLHttpRequest.DONE]
@@ -186,7 +186,7 @@ describe 'XMLHttpRequest', ->
         @xhr.send JSON.stringify(@dripJson)
 
       it 'events states are in the correct order', (done) ->
-        @eventCheck = =>
+        @events.check = =>
           expect(@states).to.deep.equal [XMLHttpRequest.OPENED,
               XMLHttpRequest.HEADERS_RECEIVED, XMLHttpRequest.LOADING,
               XMLHttpRequest.DONE]
@@ -198,7 +198,7 @@ describe 'XMLHttpRequest', ->
         @xhr.send()
 
       it 'events states are in the correct order', (done) ->
-        @eventCheck = =>
+        @events.check = =>
           expect(@states).to.deep.equal [XMLHttpRequest.OPENED,
               XMLHttpRequest.DONE]
           done()

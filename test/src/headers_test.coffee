@@ -4,7 +4,7 @@ describe 'XMLHttpRequest', ->
 
   describe '#setRequestHeader', ->
     beforeEach ->
-      @xhr.open 'POST', 'https://localhost:8911/_/headers'
+      @xhr.open 'POST', 'http://localhost:8912/_/headers'
       @xhr.responseType = 'text'
 
     describe 'with allowed headers', ->
@@ -73,7 +73,7 @@ describe 'XMLHttpRequest', ->
 
   describe 'with no headers', ->
     beforeEach ->
-      @xhr.open 'POST', 'https://localhost:8911/_/headers'
+      @xhr.open 'POST', 'http://localhost:8912/_/headers'
       @xhr.responseType = 'text'
 
     it 'should set the protected headers correctly', (done) ->
@@ -83,7 +83,7 @@ describe 'XMLHttpRequest', ->
         expect(headers).to.have.property 'connection'
         expect(headers['connection']).to.equal 'keep-alive'
         expect(headers).to.have.property 'host'
-        expect(headers['host']).to.equal 'localhost:8911'
+        expect(headers['host']).to.equal 'localhost:8912'
         expect(headers).to.have.property 'user-agent'
         expect(headers['user-agent']).to.match(/^Mozilla\//)
         done()
@@ -91,7 +91,7 @@ describe 'XMLHttpRequest', ->
 
   describe '#getResponseHeader', ->
     beforeEach ->
-      @xhr.open 'POST', 'https://localhost:8911/_/get_headers'
+      @xhr.open 'POST', 'http://localhost:8912/_/get_headers'
       @headerJson =
           '''
           {"Accept-Ranges": "bytes",
@@ -126,7 +126,7 @@ describe 'XMLHttpRequest', ->
 
   describe '#getAllResponseHeaders', ->
     beforeEach ->
-      @xhr.open 'POST', 'https://localhost:8911/_/get_headers'
+      @xhr.open 'POST', 'http://localhost:8912/_/get_headers'
       @headerJson =
           '''
           {"Accept-Ranges": "bytes",

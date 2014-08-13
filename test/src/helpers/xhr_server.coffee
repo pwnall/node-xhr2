@@ -39,16 +39,14 @@ class XhrServer
                       'Content-Type, Authorization'
       next()
 
-    @app.use @app.router
-
     @app.use express.static(fs.realpathSync(__dirname + '/../../../'),
-                            { hidden: true })
+                            { dotfiles: 'allow' })
 
     ## Routes
 
     @app.all '/_/method', (request, response) ->
       body = request.method
-      response.header 'Content-Type', 'text/plain'
+      response.header 'Content-Type', 'text/plain; charset=utf-8'
       response.header 'Content-Length', body.length.toString()
       response.end body
 
@@ -115,7 +113,7 @@ class XhrServer
     @app.all '/_/redirect/:status/:next_page', (request, response) =>
       response.statusCode = parseInt(request.params.status)
       response.header 'Location',
-          "https://#{request.get('host')}/_/#{request.params.next_page}"
+          "http://#{request.get('host')}/_/#{request.params.next_page}"
       body = "<p>This is supposed to have a redirect link</p>"
       response.header 'Content-Type', 'text/html'
       response.header 'Content-Length', body.length.toString()

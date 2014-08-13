@@ -67,7 +67,8 @@ build = (callback) ->
     # Build the binary test image.
     buffer = fs.readFileSync 'test/fixtures/xhr2.png'
     bytes = (buffer.readUInt8(i) for i in [0...buffer.length])
-    js = "global.xhr2PngBytes = #{JSON.stringify(bytes)};"
+    globalJs = '((function(){ return this.global || this; })())'
+    js = "#{globalJs}.xhr2PngBytes = #{JSON.stringify(bytes)};"
     fs.writeFileSync 'test/js/helpers/xhr2.png.js', js
 
     callback() if callback

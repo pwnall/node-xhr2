@@ -1,6 +1,7 @@
 if typeof window is 'undefined'
   # node.js
   global.XMLHttpRequest = require '../../../lib/xhr2'
+  global.ProgressEvent = XMLHttpRequest.ProgressEvent
   global.NetworkError = XMLHttpRequest.NetworkError
   global.SecurityError = XMLHttpRequest.SecurityError
   global.InvalidStateError = XMLHttpRequest.InvalidStateError
@@ -21,6 +22,14 @@ if typeof window is 'undefined'
   global.XMLHttpRequest.nodejsSet httpsAgent: agent
 else
   # browser
+
+  # HACK(pwnall): the test is first loaded on https so the developer can bypass
+  #     the SSL interstitial; however, we need to run the test on http, because
+  #     Chrome blocks https -> http XHRs
+  if window.location.href.indexOf('https://') is 0
+    window.location.href = window.location.href.replace('https://', 'http://').
+                                                replace(':8911', ':8912')
+
   window.NetworkError = window.Error
   window.SecurityError = window.Error
   window.assert = window.chai.assert

@@ -50,8 +50,8 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @_totalBytes = 0
     @_lengthComputable = false
 
-  # @property {function(XMLHttpRequestProgressEvent)} DOM level 0-style handler
-  #   for the 'readystatechange' event
+  # @property {function(ProgressEvent)} DOM level 0-style handler for the
+  #   'readystatechange' event
   onreadystatechange: null
 
   # @property {Number} the current state of the XHR object
@@ -386,7 +386,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # @return {undefined} undefined
   _setReadyState: (newReadyState) ->
     @readyState = newReadyState
-    event = new XMLHttpRequestProgressEvent('readystatechange', @)
+    event = new ProgressEvent 'readystatechange'
     @dispatchEvent event
     undefined
 
@@ -604,7 +604,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # @param {String} eventType one of the XHR progress event types, such as
   #   'load' and 'progress'
   _dispatchProgress: (eventType) ->
-    event = new XMLHttpRequestProgressEvent eventType, @
+    event = new ProgressEvent eventType
     event.lengthComputable = @_lengthComputable
     event.loaded = @_loadedBytes
     event.total = @_totalBytes

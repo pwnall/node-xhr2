@@ -1,12 +1,13 @@
-# http://www.w3.org/TR/XMLHttpRequest/#xmlhttprequestupload
-class XMLHttpRequestProgressEvent
+# http://xhr.spec.whatwg.org/#interface-progressevent
+class ProgressEvent
   # Creates a new event.
   #
   # @param {String} type the event type, e.g. 'readystatechange'; must be
   #   lowercased
   # @param {XMLHttpRequest} target the XMLHttpRequest firing this event
-  constructor: (@type, @target) ->
-    @currentTarget = @target
+  constructor: (@type) ->
+    @target = null
+    @currentTarget = null
     @lengthComputable = false
     @loaded = 0
     @total = 0
@@ -35,5 +36,5 @@ class XMLHttpRequestProgressEvent
   total: null
 
 
-# The XHR spec exports the XMLHttRequestProgressEvent constructor.
-XMLHttpRequest.XMLHttpRequestProgressEvent = XMLHttpRequestProgressEvent
+# The XHR spec exports the ProgressEvent constructor.
+XMLHttpRequest.ProgressEvent = ProgressEvent

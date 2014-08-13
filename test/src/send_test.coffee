@@ -17,6 +17,7 @@ describe 'XMLHttpRequest', ->
 
     it 'works with ASCII DOMStrings', (done) ->
       @xhr.onload = =>
+        console.log ['XXXXX onload called']
         expect(@xhr.getResponseHeader('content-type')).to.
             match(/^text\/plain(;\s?charset=UTF-8)?$/)
         expect(@xhr.responseText).to.equal 'Hello world!'
