@@ -182,6 +182,8 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
         @_sendFile data
       when 'http:', 'https:'
         @_sendHttp data
+      when null
+        @_sendRelative data
       else
         throw new NetworkError "Unsupported protocol #{@_url.protocol}"
 
@@ -393,11 +395,17 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # XMLHttpRequest#send() implementation for the file: protocol.
   #
   # @private
-  _sendFile: ->
-    unless @_url.method is 'GET'
+  _sendFile: (data) ->
+    unless @_method is 'GET'
       throw new NetworkError 'The file protocol only supports GET'
 
     throw new Error "Protocol file: not implemented"
+
+  # XMLHttpRequest#send() implementation for the relative URLs.
+  #
+  # @private
+  _sendRelative: (data) ->
+    throw new Error "Relative URLs: not implemented"
 
   # XMLHttpRequest#send() implementation for the http: and https: protocols.
   #
