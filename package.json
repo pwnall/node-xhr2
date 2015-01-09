@@ -35,6 +35,7 @@
     "sinon-chai": ">= 2.5.0"
   },
   "main": "lib/xhr2.js",
+  "browser": "lib/browser.js",
   "directories": {
     "doc": "doc",
     "lib": "lib",
