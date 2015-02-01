@@ -71,7 +71,7 @@ class XMLHttpRequestEventTarget
     eventType = eventType.toLowerCase()
     if @_listeners[eventType]
       index = @_listeners[eventType].indexOf listener
-      @_listeners.splice index, 1 if index isnt -1
+      @_listeners[eventType].splice index, 1 if index isnt -1
     undefined
 
   # Calls all the listeners for an event.
