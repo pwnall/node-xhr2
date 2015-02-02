@@ -18,6 +18,19 @@ describe 'XMLHttpRequestEventTarget', ->
       @xhr.dispatchEvent @loadEvent
       expect(count).to.equal 1
 
+    it 'removes a DOM2 listener correctly', ->
+      count = 0
+      listener = (event) ->
+        count += 1
+      @xhr.addEventListener 'load', listener
+      @xhr.dispatchEvent @loadEvent
+      expect(count).to.equal 1
+
+      count = 0
+      @xhr.removeEventListener 'load', listener
+      @xhr.dispatchEvent @loadEvent
+      expect(count).to.equal 0
+
     it 'binds this correctly in a DOM0 listener', ->
       eventThis = null
       @xhr.onload = (event) ->
