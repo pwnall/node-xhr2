@@ -262,6 +262,13 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
       @nodejsHttpAgent = options.httpAgent
     if 'httpsAgent' of options
       @nodejsHttpsAgent = options.httpsAgent
+    if 'baseUrl' of options
+      baseUrl = options.baseUrl
+      unless baseUrl is null
+        parsedUrl = url.parse baseUrl, false, true
+        unless parsedUrl.protocol
+          throw new SyntaxError("baseUrl must be an absolute URL")
+      @nodejsBaseUrl = baseUrl
 
     undefined
 
@@ -317,17 +324,25 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
 
   # @property {http.Agent} the agent option passed to HTTP requests
   #
-  # NOTE: this is not in the XMLHttpRequest API, and will not work in
-  # browsers.  It is a stable node-xhr2 API that is useful for testing
-  # & going through web-proxies.
+  # NOTE: this is not in the XMLHttpRequest API, and will not work in browsers.
+  # It is a stable node-xhr2 API that is useful for testing & going through
+  # web-proxies.
   nodejsHttpAgent: http.globalAgent
 
   # @property {https.Agent} the agent option passed to HTTPS requests
   #
-  # NOTE: this is not in the XMLHttpRequest API, and will not work in
-  # browsers.  It is a stable node-xhr2 API that is useful for testing
-  # & going through web-proxies.
+  # NOTE: this is not in the XMLHttpRequest API, and will not work in browsers.
+  # It is a stable node-xhr2 API that is useful for testing & going through
+  # web-proxies.
   nodejsHttpsAgent: https.globalAgent
+
+  # @property {String} the base URL that relative URLs get resolved to
+  #
+  # NOTE: this is not in the XMLHttpRequest API, and will not work in browsers.
+  # Its browser equivalent is the base URL of the document associated with the
+  # Window object. It is a stable node-xhr2 API provided for libraries such as
+  # Angular Universal.
+  nodejsBaseUrl: null
 
   # HTTP methods that are disallowed in the XHR spec.
   #
@@ -634,7 +649,12 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # @param {String} urlString the URL to be parsed
   # @return {Object} parsed URL
   _parseUrl: (urlString) ->
-    xhrUrl = url.parse urlString, false, true
+    if @nodejsBaseUrl is null
+      absoluteUrlString = urlString
+    else
+      absoluteUrlString = url.resolve @nodejsBaseUrl, urlString
+
+    xhrUrl = url.parse absoluteUrlString, false, true
     xhrUrl.hash = null
     if xhrUrl.auth and (user? or password?)
       index = xhrUrl.auth.indexOf ':'

@@ -59,6 +59,17 @@ describe 'XMLHttpRequest', ->
           done()
         @xhr.send()
 
+    describe 'on a local relative GET', ->
+      beforeEach ->
+        @xhr.open 'GET', '../fixtures/hello.txt'
+
+      it 'kicks off the request', (done) ->
+        @xhr.onload = (event) =>
+          expect(@xhr.status).to.equal 200
+          expect(@xhr.responseText).to.equal 'Hello world!\n'
+          done()
+        @xhr.send()
+
   describe 'on a local gopher GET', ->
     describe '#open + #send', ->
       it 'throw a NetworkError', ->

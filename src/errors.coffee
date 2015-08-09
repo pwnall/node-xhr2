@@ -23,5 +23,9 @@ class NetworkError extends Error
   # @private
   constructor: -> super
 
-# Thrown if there is a problem with the URL passed to the XHR.
-XMLHttpRequest.NetworkError = NetworkError
+# Thrown if parsing URLs errors out.
+XMLHttpRequest.SyntaxError = SyntaxError
+
+class SyntaxError extends Error
+  # @private:
+  constructor: -> super

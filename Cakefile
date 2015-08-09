@@ -73,8 +73,6 @@ build = (callback) ->
 
     callback() if callback
 
-
-
 webtest = (callback) ->
   xhrServer = require './test/js/helpers/xhr_server.js'
   if 'BROWSER' of process.env
@@ -88,14 +86,14 @@ webtest = (callback) ->
   callback() if callback?
 
 ssl_cert = (callback) ->
-  fs.mkdirSync 'test/ssl' unless fs.existsSync 'test/ssl'
   if fs.existsSync 'test/ssl/cert.pem'
     callback() if callback?
     return
 
-  run 'openssl req -new -x509 -days 365 -nodes -batch ' +
-      '-out test/ssl/cert.pem -keyout test/ssl/cert.pem ' +
-      '-subj /O=dropbox.js/OU=Testing/CN=localhost ', callback
+  fs.mkdirSync 'test/ssl' unless fs.existsSync 'test/ssl'
+  run 'openssl req -new -x509 -days 365 -nodes -sha256 -newkey rsa:2048 ' +
+      '-batch -out test/ssl/cert.pem -keyout test/ssl/cert.pem ' +
+      '-subj /O=xhr2.js/OU=Testing/CN=localhost ', callback
 
 vendor = (callback) ->
   # All the files will be dumped here.
