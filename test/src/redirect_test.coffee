@@ -48,3 +48,10 @@ describe 'XMLHttpRequest', ->
         expect(headers).not.to.have.property 'content-length'
         done()
       @xhr.send 'This should be dropped during the redirect'
+
+    it 'provides the final responseURL', (done) ->
+      @xhr.open 'GET', 'http://localhost:8912/_/redirect/302/method'
+      @xhr.onload = =>
+        expect(@xhr.responseURL).to.equal("http://localhost:8912/_/method")
+        done()
+      @xhr.send()

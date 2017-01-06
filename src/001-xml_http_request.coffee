@@ -29,6 +29,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @response = null
     @responseText = ''
     @responseType = ''
+    @responseURL = ''
     @status = 0
     @statusText = ''
     @timeout = 0
@@ -522,6 +523,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @_response.on 'end', => @_onHttpResponseEnd response
     @_response.on 'close', => @_onHttpResponseClose response
 
+    @responseURL = @_url.href.split('#')[0]
     @status = @_response.statusCode
     @statusText = http.STATUS_CODES[@status]
     @_parseResponseHeaders response

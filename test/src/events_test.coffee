@@ -1,4 +1,4 @@
-describe.only 'XMLHttpRequest', ->
+describe 'XMLHttpRequest', ->
   beforeEach ->
     @xhr = new XMLHttpRequest
     @dripUrl = 'http://localhost:8912/_/drip'
