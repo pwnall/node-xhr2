@@ -6,6 +6,7 @@
   "homepage": "https://github.com/pwnall/node-xhr2",
   "author": "Victor Costan <victor@costan.us> (http://www.costan.us)",
   "contributors": [
+    "Daniel Friedman <dfriedman58@gmail.com>",
     "Francois-Xavier Kowalski <francois-xavier.kowalski@hp.com>"
   ],
   "license": "MIT",
