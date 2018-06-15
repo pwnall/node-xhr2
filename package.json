@@ -2,7 +2,12 @@
   "name": "xhr2",
   "version": "0.1.4",
   "description": "XMLHttpRequest emulation for node.js",
-  "keywords": ["xhr", "xmlhttprequest", "ajax", "browser"],
+  "keywords": [
+    "xhr",
+    "xmlhttprequest",
+    "ajax",
+    "browser"
+  ],
   "homepage": "https://github.com/pwnall/node-xhr2",
   "author": "Victor Costan <victor@costan.us> (http://www.costan.us)",
   "contributors": [
@@ -21,6 +26,7 @@
     "node": ">= 0.6"
   },
   "dependencies": {
+    "form-data": "^2.1.4"
   },
   "devDependencies": {
     "async": ">= 1.4.2",

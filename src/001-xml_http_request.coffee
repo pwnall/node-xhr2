@@ -780,3 +780,6 @@ module.exports = XMLHttpRequest
 # following usage pattern:
 #     var XMLHttpRequest = require('xhr-library-name').XMLHttpRequest
 XMLHttpRequest.XMLHttpRequest = XMLHttpRequest
+
+
+XMLHttpRequest.FormData = require('form-data')

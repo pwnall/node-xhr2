@@ -1,3 +1,5 @@
+FormData = require('form-data')
+
 # @see http://xhr.spec.whatwg.org/#interface-xmlhttprequest
 class XMLHttpRequestUpload extends XMLHttpRequestEventTarget
   # @private
@@ -48,6 +50,13 @@ class XMLHttpRequestUpload extends XMLHttpRequestEventTarget
       offset = data.byteOffset
       view = new Uint8Array data.buffer
       body[i] = view[i + offset] for i in [0...data.byteLength]
+      @_body = body
+    else if data instanceof FormData
+      body = ''
+      data.on('data', (data) -> body += data.toString())
+      data.resume()
+      while !data.pauseStreams then
+      @_contentType = data.getHeaders()['content-type']
       @_body = body
     else
       # NOTE: diverging from the XHR specification of coercing everything else
