@@ -2,22 +2,26 @@
   "name": "xhr2-unsafe",
   "version": "0.1.4",
   "description": "XMLHttpRequest (unsafe) emulation for node.js",
-  "keywords": ["xhr", "xmlhttprequest", "ajax", "browser"],
-  "homepage": "https://github.com/jonluca/node-xhr2",
+  "keywords": [
+    "xhr",
+    "xmlhttprequest",
+    "ajax",
+    "browser"
+  ],
+  "homepage": "https://github.com/jonluca/node-xhr2-unsafe",
   "author": "JonLuca DeCaro",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jonluca/node-xhr2.git"
+    "url": "https://github.com/jonluca/node-xhr2-unsafe.git"
   },
   "bugs": {
-    "url": "https://github.com/jonluca/node-xhr2/issues"
+    "url": "https://github.com/jonluca/node-xhr2-unsafe/issues"
   },
   "engines": {
     "node": ">= 0.6"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "async": ">= 1.4.2",
     "chai": ">= 3.2.0",
