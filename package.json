@@ -1,21 +1,17 @@
 {
-  "name": "xhr2",
+  "name": "xhr2-unsafe",
   "version": "0.1.4",
-  "description": "XMLHttpRequest emulation for node.js",
+  "description": "XMLHttpRequest (unsafe) emulation for node.js",
   "keywords": ["xhr", "xmlhttprequest", "ajax", "browser"],
-  "homepage": "https://github.com/pwnall/node-xhr2",
-  "author": "Victor Costan <victor@costan.us> (http://www.costan.us)",
-  "contributors": [
-    "Daniel Friedman <dfriedman58@gmail.com>",
-    "Francois-Xavier Kowalski <francois-xavier.kowalski@hp.com>"
-  ],
+  "homepage": "https://github.com/jonluca/node-xhr2",
+  "author": "JonLuca DeCaro",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pwnall/node-xhr2.git"
+    "url": "https://github.com/jonluca/node-xhr2.git"
   },
   "bugs": {
-    "url": "https://github.com/pwnall/node-xhr2/issues"
+    "url": "https://github.com/jonluca/node-xhr2/issues"
   },
   "engines": {
     "node": ">= 0.6"

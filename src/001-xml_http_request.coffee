@@ -101,9 +101,6 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # @see http://www.w3.org/TR/XMLHttpRequest/#the-open()-method
   open: (method, url, async, user, password) ->
     method = method.toUpperCase()
-    if method of @_restrictedMethods
-      throw new SecurityError "HTTP method #{method} is not allowed in XHR"
-
     xhrUrl = @_parseUrl url
     async = true if async is undefined
 
@@ -147,10 +144,6 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
       throw new InvalidStateError "XHR readyState must be OPENED"
 
     loweredName = name.toLowerCase()
-    if @_restrictedHeaders[loweredName] or /^sec\-/.test(loweredName) or
-        /^proxy-/.test(loweredName)
-      console.warn "Refused to set unsafe header \"#{name}\""
-      return undefined
 
     value = value.toString()
     if loweredName of @_loweredHeaders
