@@ -5,6 +5,7 @@ This is an [npm](https://npmjs.org/) package that implements the
 of the [node.js](http://nodejs.org/) APIs.
 
 The main difference is that it allows unsafe headers and HTTP requests to be made.
+
 ## Supported Platforms
 
 This library is tested against the following platforms.

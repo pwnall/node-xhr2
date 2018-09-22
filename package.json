@@ -1,6 +1,6 @@
 {
   "name": "xhr2-unsafe",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "XMLHttpRequest (unsafe) emulation for node.js",
   "keywords": [
     "xhr",
