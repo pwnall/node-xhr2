@@ -1,22 +1,18 @@
-# XMLHttpRequest Emulation for node.js
+# XMLHttpRequest (Unsafe!) Emulation for node.js
 
 This is an [npm](https://npmjs.org/) package that implements the
 [W3C XMLHttpRequest](http://www.w3.org/TR/XMLHttpRequest/) specification on top
 of the [node.js](http://nodejs.org/) APIs.
 
-The main difference is that it allows unsafe headers and HTTP requests to be made.
+The package is a fork of the [original](https://github.com/pwnall/node-xhr2), which allows for unsafe headers and methods to be used.
 
 ## Supported Platforms
 
 This library is tested against the following platforms.
 
-* [node.js](http://nodejs.org/) 0.6
-* [node.js](http://nodejs.org/) 0.8
-* [node.js](http://nodejs.org/) 0.10
-* [node.js](http://nodejs.org/) 0.11
+* [node.js](http://nodejs.org/) 10.0
 
 Keep in mind that the versions above are not hard requirements.
-
 
 ## Installation and Usage
 
