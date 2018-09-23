@@ -26,30 +26,6 @@ describe 'XMLHttpRequest', ->
           done()
         @xhr.send ''
 
-    describe 'with a mix of allowed and forbidden headers', ->
-      beforeEach ->
-        @xhr.setRequestHeader 'Authorization', 'lol'
-        @xhr.setRequestHeader 'Proxy-Authorization', 'evil:kitten'
-        @xhr.setRequestHeader 'Sec-Breach', 'yes please'
-        @xhr.setRequestHeader 'Host', 'www.google.com'
-        @xhr.setRequestHeader 'Origin', 'https://www.google.com'
-        @xhr.setRequestHeader 'X-Answer', '42'
-
-      it 'should only send the allowed headers', (done) ->
-        @xhr.onloadend = =>
-          expect(@xhr.responseText).to.match(/^\{.*\}$/)
-          headers = JSON.parse @xhr.responseText
-          expect(headers).to.have.property 'authorization'
-          expect(headers['authorization']).to.equal 'lol'
-          expect(headers).not.to.have.property 'proxy-authorization'
-          expect(headers).not.to.have.property 'sec-breach'
-          expect(headers['origin']).not.to.match /www\.google\.com/
-          expect(headers['host']).not.to.match /www\.google\.com/
-          expect(headers).to.have.property 'x-answer'
-          expect(headers['x-answer']).to.equal '42'
-          done()
-        @xhr.send ''
-
     describe 'with repeated headers', ->
       beforeEach ->
         @xhr.setRequestHeader 'Authorization', 'trol'

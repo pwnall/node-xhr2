@@ -19,9 +19,6 @@ describe 'XMLHttpRequest', ->
       expect(@xhr.statusText).to.equal ''
 
   describe '#open', ->
-    it 'throws SecurityError on CONNECT', ->
-      expect(=> @xhr.open 'CONNECT', 'http://localhost:8912/test').to.
-          throw(SecurityError)
 
     describe 'with a GET for a local https request', ->
       beforeEach ->

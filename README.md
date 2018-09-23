@@ -26,7 +26,7 @@ section in your `package.json`.
 ```json
 {
   "dependencies": {
-    "xhr2": "*"
+    "xhr2-unsafe": "*"
   }
 }
 ```
@@ -34,14 +34,14 @@ section in your `package.json`.
 Alternatively, `npm` can be used to install the library directly.
 
 ```bash
-npm install xhr2
+npm install xhr2-unsafe
 ```
 
 Once the library is installed, `require`-ing it returns the `XMLHttpRequest`
 constructor.
 
 ```javascript
-var XMLHttpRequest = require('xhr2');
+var XMLHttpRequest = require('xhr2-unsafe');
 ```
 
 The other objects that are usually defined in an XHR environment are hanging
@@ -54,7 +54,7 @@ var XMLHttpRequestUpload = XMLHttpRequest.XMLHttpRequestUpload;
 MDN (the Mozilla Developer Network) has a
 [great intro to XMLHttpRequest](https://developer.mozilla.org/en-US/docs/DOM/XMLHttpRequest/Using_XMLHttpRequest).
 
-This library's [CoffeeDocs](http://coffeedoc.info/github/pwnall/node-xhr2/) can
+This library's [CoffeeDocs](http://coffeedoc.info/jonluca/pwnall/node-xhr2-unsafe/) can
 be used as quick reference to the XMLHttpRequest specification parts that were
 implemented.
 
@@ -104,12 +104,12 @@ specification.
 
 ## Development
 
-The following commands will get the source tree in a `node-xhr2/` directory and
+The following commands will get the source tree in a `node-xhr2-unsafe/` directory and
 build the library.
 
 ```bash
-git clone git://github.com/pwnall/node-xhr2.git
-cd node-xhr2
+git clone git://github.com/jonluca/node-xhr2-unsafe.git
+cd node-xhr2-unsafe
 npm install
 npm pack
 ```
