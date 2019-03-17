@@ -8,6 +8,12 @@ https = require 'https'
 os = require 'os'
 url = require 'url'
 
+bufferAlloc = (size) -> 
+  if Buffer.alloc then Buffer.alloc(size) else new Buffer(size)
+
+bufferFrom = (string, encoding) -> 
+  if Buffer.from then Buffer.from(string, encoding) else new Buffer(string, encoding)
+
 # The ECMAScript HTTP API.
 #
 # @see http://www.w3.org/TR/XMLHttpRequest/#introduction
@@ -760,13 +766,13 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # @return {Buffer} same as Buffer.concat(buffers) in node 0.8 and above
   _concatBuffers: (buffers) ->
     if buffers.length is 0
-      return new Buffer 0
+      return bufferAlloc 0
     if buffers.length is 1
       return buffers[0]
 
     length = 0
     length += buffer.length for buffer in buffers
-    target = new Buffer length
+    target = bufferAlloc length
     length = 0
     for buffer in buffers
       buffer.copy target, length
