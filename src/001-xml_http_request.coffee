@@ -760,13 +760,13 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # @return {Buffer} same as Buffer.concat(buffers) in node 0.8 and above
   _concatBuffers: (buffers) ->
     if buffers.length is 0
-      return new Buffer 0
+      return Buffer.alloc 0
     if buffers.length is 1
       return buffers[0]
 
     length = 0
     length += buffer.length for buffer in buffers
-    target = new Buffer length
+    target = Buffer.alloc length
     length = 0
     for buffer in buffers
       buffer.copy target, length

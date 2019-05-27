@@ -9,7 +9,7 @@ describe 'XMLHttpRequest', ->
       if typeof Buffer is 'undefined'
         @buffer = null
       else
-        @buffer = new Buffer xhr2PngBytes.length
+        @buffer = Buffer.alloc xhr2PngBytes.length
 
       for i in [0...xhr2PngBytes.length]
         @arrayBufferView[i] = xhr2PngBytes[i]

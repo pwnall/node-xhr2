@@ -32,19 +32,19 @@ class XMLHttpRequestUpload extends XMLHttpRequestEventTarget
       # DOMString
       if data.length isnt 0
         @_contentType = 'text/plain;charset=UTF-8'
-      @_body = new Buffer data, 'utf8'
+      @_body = Buffer.from data, 'utf8'
     else if Buffer.isBuffer data
       # node.js Buffer
       @_body = data
     else if data instanceof ArrayBuffer
       # ArrayBuffer arguments were supported in an old revision of the spec.
-      body = new Buffer data.byteLength
+      body = Buffer.alloc data.byteLength
       view = new Uint8Array data
       body[i] = view[i] for i in [0...data.byteLength]
       @_body = body
     else if data.buffer and data.buffer instanceof ArrayBuffer
       # ArrayBufferView
-      body = new Buffer data.byteLength
+      body = Buffer.alloc data.byteLength
       offset = data.byteOffset
       view = new Uint8Array data.buffer
       body[i] = view[i + offset] for i in [0...data.byteLength]
