@@ -9,10 +9,8 @@ of the [node.js](http://nodejs.org/) APIs.
 
 This library is tested against the following platforms.
 
-* [node.js](http://nodejs.org/) 0.6
-* [node.js](http://nodejs.org/) 0.8
-* [node.js](http://nodejs.org/) 0.10
-* [node.js](http://nodejs.org/) 0.11
+* [node.js](http://nodejs.org/) 10
+* [node.js](http://nodejs.org/) 12
 
 Keep in mind that the versions above are not hard requirements.
 
