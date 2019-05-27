@@ -2,7 +2,12 @@
   "name": "xhr2",
   "version": "0.1.4",
   "description": "XMLHttpRequest emulation for node.js",
-  "keywords": ["xhr", "xmlhttprequest", "ajax", "browser"],
+  "keywords": [
+    "xhr",
+    "xmlhttprequest",
+    "ajax",
+    "browser"
+  ],
   "homepage": "https://github.com/pwnall/node-xhr2",
   "author": "Victor Costan <victor@costan.us> (http://www.costan.us)",
   "contributors": [
@@ -20,20 +25,19 @@
   "engines": {
     "node": ">= 0.6"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
-    "async": ">= 1.4.2",
-    "chai": ">= 3.2.0",
-    "codo": ">= 2.0.11",
-    "coffee-script": ">= 1.9.3",
-    "express": ">= 4.13.3",
-    "glob": ">= 5.0.14",
-    "mocha": ">= 2.2.5",
-    "open": ">= 0.0.5",
+    "async": ">=3.0.1",
+    "chai": ">=4.2.0",
+    "codo": ">=2.1.2",
+    "coffeescript": ">=2.4.1",
+    "express": ">=4.17.1",
+    "glob": ">=7.1.4",
+    "mocha": ">=6.1.4",
+    "open": ">=6.3.0",
     "remove": ">= 0.1.5",
-    "sinon": ">= 1.15.4",
-    "sinon-chai": ">= 2.8.0"
+    "sinon": ">=7.3.2",
+    "sinon-chai": ">=3.3.0"
   },
   "main": "lib/xhr2.js",
   "browser": "lib/browser.js",
@@ -44,7 +48,7 @@
     "test": "test"
   },
   "scripts": {
-    "prepublish": "node_modules/coffee-script/bin/cake build",
-    "test": "node_modules/coffee-script/bin/cake test"
+    "prepublish": "cake build",
+    "test": "cake test"
   }
 }

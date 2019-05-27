@@ -117,7 +117,7 @@ Installing CoffeeScript globally will let you type `cake` instead of
 `node_modules/.bin/cake`
 
 ```bash
-npm install -g coffee-script
+npm install -g coffeescript
 ```
 
 The library comes with unit tests that exercise the XMLHttpRequest API.

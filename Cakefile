@@ -62,16 +62,15 @@ build = (callback) ->
     test_files = glob.sync path.join(test_dir, '*.coffee')
     commands.push "node_modules/.bin/coffee --output #{out_dir} " +
                   "--compile #{test_files.join(' ')}"
-  async.forEachSeries commands, run, ->
 
+  async.forEachSeries commands, run, ->
     # Build the binary test image.
     buffer = fs.readFileSync 'test/fixtures/xhr2.png'
     bytes = (buffer.readUInt8(i) for i in [0...buffer.length])
     globalJs = '((function(){ return this.global || this; })())'
     js = "#{globalJs}.xhr2PngBytes = #{JSON.stringify(bytes)};"
-    fs.writeFileSync 'test/js/helpers/xhr2.png.js', js
-
-    callback() if callback
+    fs.writeFile 'test/js/helpers/xhr2.png.js', js, ->
+      callback() if callback
 
 webtest = (callback) ->
   xhrServer = require './test/js/helpers/xhr_server.js'
@@ -101,9 +100,9 @@ vendor = (callback) ->
 
   downloads = [
     # chai.js ships different builds for browsers vs node.js
-    ['http://chaijs.com/chai.js', 'test/vendor/chai.js'],
+    ['https://www.chaijs.com/chai.js', 'test/vendor/chai.js'],
     # sinon.js also ships special builds for browsers
-    ['http://sinonjs.org/releases/sinon.js', 'test/vendor/sinon.js'],
+    ['https://sinonjs.org/releases/sinon.js', 'test/vendor/sinon.js'],
   ]
   async.forEachSeries downloads, download, ->
     callback() if callback

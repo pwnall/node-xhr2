@@ -20,7 +20,6 @@ if typeof window is 'undefined'
   agent.options.rejectUnauthorized = true
   agent.options.ca = xhrServer.https.sslCertificate()
   global.XMLHttpRequest.nodejsSet httpsAgent: agent
-  console.log xhrServer.http.testUrl()
   global.XMLHttpRequest.nodejsSet(
       baseUrl: xhrServer.http.testUrl().replace('https://', 'http://'))
 else
