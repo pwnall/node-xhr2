@@ -20,7 +20,7 @@ task 'test', ->
       ssl_cert ->
         test_cases = glob.sync 'test/js/**/*_test.js'
         test_cases.sort()  # Consistent test case order.
-        run 'node_modules/.bin/mocha --colors --slow 200 --timeout 1000 ' +
+        run 'node_modules/.bin/mocha --colors --slow 200 --timeout 1000 --exit ' +
             "--require test/js/helpers/setup.js #{test_cases.join(' ')}"
 
 task 'webtest', ->
