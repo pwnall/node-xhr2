@@ -19,6 +19,13 @@ describe 'XMLHttpRequest', ->
         done()
       @xhr.send()
 
+    it 'resolves effective request uri for the next location', (done) ->
+      @xhr.open 'GET', 'http://localhost:8912/_/redirect/302/method?relative=true'
+      @xhr.onload = =>
+        expect(@xhr._url['href']).to.match(/http:\/\/localhost:8912\/method/)
+        done()
+      @xhr.send()
+
     it 'persists custom request headers across redirects', (done) ->
       @xhr.open 'GET', 'http://localhost:8912/_/redirect/302/headers'
       @xhr.setRequestHeader 'X-Redirect-Test', 'should be preserved'

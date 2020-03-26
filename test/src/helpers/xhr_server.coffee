@@ -119,8 +119,11 @@ class XhrServer
     # Returns a HTTP redirect. Used to test the redirection handling code.
     @app.all '/_/redirect/:status/:next_page', (request, response) =>
       response.statusCode = parseInt(request.params.status)
-      response.header 'Location',
-          "http://#{request.get('host')}/_/#{request.params.next_page}"
+      if request.query.relative
+        url = "/#{request.params.next_page}"
+      else
+        url = "http://#{request.get('host')}/_/#{request.params.next_page}"
+      response.header 'Location', url
       body = "<p>This is supposed to have a redirect link</p>"
       response.header 'Content-Type', 'text/html'
       response.header 'Content-Length', body.length.toString()
