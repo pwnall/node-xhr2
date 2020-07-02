@@ -142,13 +142,13 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   # @throw {SyntaxError} name is not a valid HTTP header name or value is not
   #   a valid HTTP header value
   # @see http://www.w3.org/TR/XMLHttpRequest/#the-setrequestheader()-method
-  setRequestHeader: (name, value) ->
+  setRequestHeader: (name, value, allowUnsafeHeaders = false) ->
     unless @readyState is XMLHttpRequest.OPENED
       throw new InvalidStateError "XHR readyState must be OPENED"
 
     loweredName = name.toLowerCase()
-    if @_restrictedHeaders[loweredName] or /^sec\-/.test(loweredName) or
-        /^proxy-/.test(loweredName)
+    if (!allowUnsafeHeaders and (@_restrictedHeaders[loweredName] or /^sec\-/.test(loweredName) or
+        /^proxy-/.test(loweredName)))
       console.warn "Refused to set unsafe header \"#{name}\""
       return undefined
 
