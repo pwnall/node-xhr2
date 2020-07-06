@@ -70,6 +70,28 @@ describe 'XMLHttpRequest', ->
           done()
         @xhr.send()
 
+    describe 'on an unencoded URL', ->
+      beforeEach ->
+        @xhr.open 'GET', 'http://localhost:8912/_/url/💻'
+
+      it 'encodes correctly', (done) ->
+        @xhr.onload = (event) =>
+          expect(@xhr.status).to.equal 200
+          expect(@xhr.responseText).to.equal '"💻"'
+          done()
+        @xhr.send()
+
+    describe 'on an encoded URL', ->
+      beforeEach ->
+        @xhr.open 'GET', 'http://localhost:8912/_/url/%F0%9F%92%BB'
+
+      it 'does not double-encode', (done) ->
+        @xhr.onload = (event) =>
+          expect(@xhr.status).to.equal 200
+          expect(@xhr.responseText).to.equal '"💻"'
+          done()
+        @xhr.send()
+
   describe 'on a local gopher GET', ->
     describe '#open + #send', ->
       it 'throw a NetworkError', ->

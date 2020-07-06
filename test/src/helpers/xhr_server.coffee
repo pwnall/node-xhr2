@@ -95,6 +95,10 @@ class XhrServer
         response.write json.body if json.body
         response.end()
 
+    # Returns a given URL parameter. Used for URL encoding testing.
+    @app.all '/_/url/:arg', (request, response) =>
+      response.json request.params.arg
+
     # Sends data in small chunks. Used for event testing.
     @app.post '/_/drip', (request, response) ->
       request.connection.setNoDelay()
