@@ -1,5 +1,8 @@
-dist: xenial
+dist: focal
 language: node_js
+os: linux
 node_js:
   - "10"
   - "12"
+  - "14"
+  - "15"
