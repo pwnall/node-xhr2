@@ -1,6 +1,6 @@
 {
   "name": "xhr2",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "XMLHttpRequest emulation for node.js",
   "keywords": [
     "xhr",
@@ -13,7 +13,9 @@
   "contributors": [
     "Alexander Black <aeonrush@live.ru>",
     "Daniel Friedman <dfriedman58@gmail.com>",
-    "Francois-Xavier Kowalski <francois-xavier.kowalski@hp.com>"
+    "Eugen Mayer <eugen.mayer@kontextwork.de>",
+    "Francois-Xavier Kowalski <francois-xavier.kowalski@hp.com>",
+    "Sébastien Nicouleaud"
   ],
   "license": "MIT",
   "repository": {
