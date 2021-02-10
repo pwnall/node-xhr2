@@ -379,7 +379,6 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
       trailer: true
       'transfer-encoding': true
       upgrade: true
-      'user-agent': true
       via: true
 
   # HTTP response headers that should not be exposed according to the XHR spec.
@@ -391,7 +390,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     'set-cookie': true
     'set-cookie2': true
 
-  # The value of the User-Agent header.
+  # The default value of the User-Agent header.
   _userAgent: "Mozilla/5.0 (#{os.type()} #{os.arch()}) " +
               "node.js/#{process.versions.node} v8/#{process.versions.v8}"
 
@@ -483,7 +482,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     @_headers['Host'] = @_url.host
     if @_anonymous
       @_headers['Referer'] = 'about:blank'
-    @_headers['User-Agent'] = @_userAgent
+    @_headers['User-Agent'] ||= @_userAgent
     @upload._finalizeHeaders @_headers, @_loweredHeaders
     undefined
 

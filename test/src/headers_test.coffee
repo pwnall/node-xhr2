@@ -10,6 +10,7 @@ describe 'XMLHttpRequest', ->
     describe 'with allowed headers', ->
       beforeEach ->
         @xhr.setRequestHeader 'Authorization', 'lol'
+        @xhr.setRequestHeader 'User-Agent', 'toaster'
         @xhr.setRequestHeader 'X-Answer', '42'
         @xhr.setRequestHeader 'X-Header-Name', 'value'
 
@@ -19,6 +20,8 @@ describe 'XMLHttpRequest', ->
           headers = JSON.parse @xhr.responseText
           expect(headers).to.have.property 'authorization'
           expect(headers['authorization']).to.equal 'lol'
+          expect(headers).to.have.property 'user-agent'
+          expect(headers['user-agent']).to.equal 'toaster'
           expect(headers).to.have.property 'x-answer'
           expect(headers['x-answer']).to.equal '42'
           expect(headers).to.have.property 'x-header-name'
