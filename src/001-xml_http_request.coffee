@@ -500,7 +500,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
     # Transparent redirection handling.
     switch response.statusCode
       when 301, 302, 303, 307, 308
-        @_url = @_parseUrl response.headers['location']
+        @_url = @_parseUrl (url.resolve @_url['href'], response.headers['location'])
         @_method = 'GET'
         if 'content-type' of @_loweredHeaders
           delete @_headers[@_loweredHeaders['content-type']]
