@@ -6,7 +6,7 @@
 http = require 'http'
 https = require 'https'
 os = require 'os'
-url = require 'url'
+url = require 'native-url'
 
 # The ECMAScript HTTP API.
 #
@@ -105,6 +105,8 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
       throw new SecurityError "HTTP method #{method} is not allowed in XHR"
 
     xhrUrl = @_parseUrl url
+    xhrUrl.path = encodeURI xhrUrl.path
+
     async = true if async is undefined
 
     switch @readyState

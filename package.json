@@ -28,7 +28,9 @@
   "engines": {
     "node": ">= 6"
   },
-  "dependencies": {},
+  "dependencies": {
+    "native-url": "^0.3.4"
+  },
   "devDependencies": {
     "async": ">=3.0.1",
     "chai": ">=4.2.0",
