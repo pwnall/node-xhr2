@@ -106,6 +106,8 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
 
     xhrUrl = @_parseUrl url
     async = true if async is undefined
+    if async == false
+      throw new Error "Synchronous (async=false) XMLHttpRequests are unsupported"
 
     switch @readyState
       when XMLHttpRequest.UNSENT, XMLHttpRequest.OPENED, XMLHttpRequest.DONE
