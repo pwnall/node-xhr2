@@ -608,6 +608,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
   _onHttpRequestError: (request, error) ->
     return unless @_request is request
 
+    @_error = error
     @_setError()
     request.abort()
     @_setReadyState XMLHttpRequest.DONE
