@@ -428,7 +428,7 @@ class XMLHttpRequest extends XMLHttpRequestEventTarget
       throw new Error "Synchronous XHR processing not implemented"
 
     if data? and (@_method is 'GET' or @_method is 'HEAD')
-      console.warn "Discarding entity body for #{@_method} requests"
+      # console.warn "Discarding entity body for #{@_method} requests"
       data = null
     else
       # Send Content-Length: 0
